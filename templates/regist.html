@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <form action="/regist_py" method="post">
+        <input type="text" placeholder="ユーザーネーム" name="user_name">
+        <input type="password" value="パスワード" name = "pass">
+        <input type="submit" name="login" value="登録">
+    </form>
+    <a href="/rogin">登録済の方はこちら</a>
+{% endblock %}

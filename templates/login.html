@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <form action="/login_py" method="post">
+        <input type="text" placeholder="ユーザーネーム" name="user_name">
+        <input type="password" value="パスワード" name = "pass">
+        <input type="submit" name="login" value="ログイン">
+    </form>
+    <a href="/home">ホームへ</a>
+    <a href="/regist">登録はこちら</a>
+{% endblock %}

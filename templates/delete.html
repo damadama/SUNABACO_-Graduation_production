@@ -1,0 +1,14 @@
+
+{% extends "base.html" %}
+
+
+{% block content %}
+    <form action="/delete_py" method="post">
+        <input type="text" value={{html_tweet_data[0][0]}} name="id" class="hiden">
+        <input type="text" name = "task" value={{html_tweet_data[0][2]}}>
+        <input type="submit" name="delete" value="削除する">
+    </form>
+    <a href="/home">ホームへ</a>
+
+
+{% endblock %}

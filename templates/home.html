@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p>Time Line</p>
+    {% for tweet in html_tweet_r %}
+        <div class="card">
+            <p>
+            <p>{{tweet[2]}}</p>
+            <a class="button1" href="/edit/{{tweet[0]}}">編集</a>
+            
+            
+            <form action="/delete_py/{{tweet[0]}}" method="post">
+                <input type="text" value="{{tweet[0]}}" name="id" class="hiden">
+                <input class="button1" type="submit" value="削除" onclick="disp()">
+            </form>
+            </p>
+            <p>
+                <img src="{{tweet[5]}}" alt="" class="submit_img">
+            </p>
+            <!-- 押した時点で削除 -->
+            <!-- <form action="/delete_py/{{tweet[0]}}" method="post">
+                <input type="text" value="{{tweet[0]}}" name="id" class="hiden">
+                <input class="button1" type="submit" value="削除">
+            </form> -->
+        </div>
+        
+        <!-- 削除の確認 -->
+        <script>
+            function disp(){
+                var result=window.confirm("本当に削除してもいいですか？");
+                if(result){
+                    console.log("OKがクリック")
+                }
+                else{
+                    console.log("NGがクリック")
+                }
+            }
+        </script>
+
+    {% endfor %}
+
+
+
+
+    <div>
+        <a href="/add">追加ページへ</a>
+    </div>
+
+
+
+
+{% endblock %}

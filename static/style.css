@@ -1,0 +1,48 @@
+body{
+    font-family: "YuGothic";
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: azure;
+}
+
+.menu{
+    display: flex;
+}
+
+p{
+    color:rgb(139, 139, 210);
+    margin: 2px;
+}
+
+.footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: azure;
+}
+
+.card{
+    position: relative;
+    display: flex;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.hiden{
+    display: none;
+}
+
+.button1{
+    margin-left: 10px;
+}
+
+.submit_img{
+    display: flex;
+    width: 200px;
+    height: auto;
+}
