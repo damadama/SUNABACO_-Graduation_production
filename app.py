@@ -11,6 +11,8 @@ from werkzeug.utils import secure_filename
 # 画像のダウンロード
 from flask import send_from_directory
 
+# gittest221004
+
 
 app = Flask(__name__)
 
