@@ -3,6 +3,12 @@
 {% block content %}
     <p>ここは全体mapです</p>
 
+    {% for mapdata in html_map_data %}
+        <p>{{mapdata}}</p>
+    {% endfor %}
+
+    <input type="button" value="button" id="btn">
+
     <div>
         <h1>Basic template</h1>
         <div id="myMap" style='width:100%;height:450px;'></div>    
@@ -11,23 +17,33 @@
 
     <script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AuESy222px73uVstzTY2dGkbAwLSw3XkFadgykE28dK31K5iU4JuRQE61qhjRog5' async defer></script>
     <script>
+
+        //htmlからjsへ変数の値を持ってくる
+        let address={{html_map_data | tojson}};
+
+        //test---------------------------
+        //let test=[{'latitude': 33.5901838, 'longitude': 130.4016888},{'latitude': 33.5901239, 'longitude': 130.4016429}];
+        let test=[{latitude: 33.5901838, longitude: 130.4016888},{latitude: 33.5901239, longitude: 130.4016429}]
+        function butotnClick(){
+            alert(test);
+        }
+        let button = document.getElementById('btn');
+        button.addEventListener('click', butotnClick);
+        //test---------------------------
+
         function GetMap() {
             let map = new Microsoft.Maps.Map('#myMap', {
-                center: new Microsoft.Maps.Location(47.6149, -122.1941), //Location center position
-                zoom: 15  //Zoom:1=zoomOut, 20=zoomUp[ 1~20 ]
+                center: new Microsoft.Maps.Location(33.5901838, 130.4016888), //Location center position
+                zoom: 18  //Zoom:1=zoomOut, 20=zoomUp[ 1~20 ]
             });
 
-            //Get MAP Infomation
-//            let center = map.getCenter();
-//            console.log(center);
+            //let address=[{'latitude': 33.5901838, 'longitude': 130.4016888},{'latitude': 33.5901239, 'longitude': 130.4016429}];
+            //let address=[{"latitude":47.6149,"longitude":-122.1941},{latitude:47.61,longitude:-122.1941}];
 
-
-            let address=[{latitude:47.6149,longitude:-122.1941},{latitude:47.61,longitude:-122.1941}];
-//            console.log(address[0]);
-
+            //for文でデータがある分だけピンを立てる処理を実行
             let pin=[]
             let group=[]
-            for (let j = 0; j<2; j++){
+            for (let j = 0; j<address.length; j++){
             //Create custom Pushpin
             pin[j] = new Microsoft.Maps.Pushpin(address[j], {
                 color: 'red',            //Color
@@ -35,7 +51,7 @@
                 enableClickedStyle:true, //Click
                 enableHoverStyle:true,   //MouseOver
                 visible:true,             //show/hide
-                title:'test'           //pushpin title
+                //title:'test'           //pushpin title
                 //subtitle:"表参道",        //Pushpin subtitle
                 //text:"G"            
             });
