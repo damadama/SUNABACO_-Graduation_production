@@ -297,6 +297,8 @@ if __name__ == '__main__':
     app.run(debug=True,  use_reloader=False)
 
 
-# 論理削除
-# 削除が確認してから実行されるように
-# 画像をアップロード、表示できるようにしてください。
+# ここから防犯マップ用の追記
+
+@app.route("/map")
+def top():
+    return render_template("map.html")
