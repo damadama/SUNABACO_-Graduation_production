@@ -1,4 +1,6 @@
 
+# from crypt import methods
+from email.headerregistry import Address
 import os
 from queue import PriorityQueue
 from flask import Flask,render_template,request,redirect,session,url_for
@@ -129,7 +131,6 @@ def add_post():
 def edit(id):
 
     if "user_id" in session:
-        
         # DBに接続
         conn = sqlite3.connect("tweet.db")
         
@@ -297,6 +298,54 @@ if __name__ == '__main__':
     app.run(debug=True,  use_reloader=False)
 
 
-# 論理削除
-# 削除が確認してから実行されるように
-# 画像をアップロード、表示できるようにしてください。
+# ここから防犯マップ用の追記
+
+@app.route("/map")
+def map():
+    # DBに接続
+    conn = sqlite3.connect("bouhan_map.db")
+    
+    #データ取得のためのカーソル作成
+    c=conn.cursor()
+    
+    # カーソルを操作するSQLを書く
+    # c.execute("select * from tweet where id = ?",(id,))
+    c.execute("select * from toukou")
+    
+    # pythonに持ってくる
+    map_data = c.fetchall()
+    
+    # 接続終了
+    c.close()
+
+    # 緯度・経度の形に格納
+    address_dict = {}
+    address_list = []
+    
+    for map_data_r in map_data:
+        address_dict["latitude"] =map_data_r[5]
+        address_dict["longitude"] = map_data_r[6]
+        address_list.append(address_dict.copy())
+        
+    return render_template("map.html",html_map_data=address_list)    
+    
+    
+@app.route("/edit2")
+def edit2():
+        # DBに接続
+        conn = sqlite3.connect("bouhan_map.db")
+        
+        #データ取得のためのカーソル作成
+        c=conn.cursor()
+        
+        # カーソルを操作するSQLを書く
+        c.execute("select * from toukou")
+        
+        # pythonに持ってくる
+        tweet_data = c.fetchall()
+        
+        # 接続終了
+        c.close()
+        
+        
+        return render_template("edit.html",html_tweet_data=tweet_data)
