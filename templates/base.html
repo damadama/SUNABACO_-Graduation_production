@@ -2,26 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="keywords" content="サイトをキーワードで説明">
+    <meta name="description" content="どんなサイトかを短い文章で説明">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/style.css">
-    <title>防犯ハザードマップ</title>
+    <title>福岡防犯ハザードマップ</title>
 </head>
 <body>
-    <div class="header">
-        <p>Logo</p>
-        <div class="menu">
-            <p><a href="/home">Home</a></p>
-            <p><a href="/login">Login</a></p>
-            <p><a href="/logout">Logout</a></p>
+    <header>
+        <div class="topContainer">
+            <div class="title">
+                <img src="../static/image/Logo.png" alt="">
+                <h1 class="topLogo"><a href="/home">ふくおか防犯ハザードマップ</a></h1>
+            </div>
+            <div class="spacebox"></div>
+            <div class="pagejump">
+                <p class="toform"><a href="/form">投稿ページ</a></p>
+                <div class="spacebox2"></div>
+                <p class="toMap"><a href="/map">全体マップ</a></p>
+            </div>
         </div>
-    </div>
-    {%block content %}
+    </header>
+    <div class="headerBlock"></div>
+    <div class="body_h">
+        <div class="body_s">
+    {% block content %}
 
     {% endblock %}
-    <div class="footer">
-        <p>damadama</p>
+        </div>
     </div>
+    <footer>
+        <p class="copyright">©︎2022 防犯ハザードマップ</p>
+    </footer>
     <script src="static/js/jquery-3.6.1.js"></script>
     <script src="static/js/common.js"></script>
 </body>
