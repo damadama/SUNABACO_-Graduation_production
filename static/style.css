@@ -1,28 +1,104 @@
+/* リセットCSS */
+body, h1, h2, h3, h4, h5, p, ul, ol, li, dl, dt, dd {
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	background: #fff;
+	text-align: center;
+	font-size: 16px;
+	line-height: 1.4;
+	min-width: 100%;
+	-webkit-text-size-adjust: 100%;
+}
+li {
+	list-style: none;
+}
+a {
+	outline: none;
+	color: inherit;
+	text-decoration: none;
+}
+img {
+	border: 0px;
+	vertical-align: bottom;
+}
+/* ここまでリセットCSS */
+
 body{
-    font-family: "YuGothic";
+    font-family: "Noto Sans JP";
 }
 
-.header{
+header{
+    width: 100%;
     display: flex;
-    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 0;
+    height: 90px;
+    justify-content: space-around;
     align-items: center;
-    background-color: azure;
+    background-color: rgb(235, 255, 190);
+    border-bottom: 1px solid rgb(138, 198, 0);
+}
+
+.headerBlock{
+    width: 100%;
+    height: 90px;
+}
+
+.topContainer{
+    width: 95%;
+    display: flex;
+    margin-top:auto;
+    margin-bottom: auto;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.title{
+    display: flex;
+    margin-top:auto;
+    margin-bottom: auto;
+    align-items: center;
+}
+
+.spacebox{
+    width: 40%;
+}
+
+.spacebox2{
+    width: 20px;
+}
+
+.pagejump{
+    color: black;
+    display: flex;
+    padding-right: 20px;
 }
 
 .menu{
     display: flex;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
-p{
-    color:rgb(139, 139, 210);
-    margin: 2px;
-}
-
-.footer{
+footer{
+    color:rgb(24, 24, 24);
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: azure;
+    background-color: rgb(235, 255, 190);
+    border-top: 1px solid rgb(138, 198, 0);
+    border-bottom: 1px solid rgb(138, 198, 0);
+    height:50px;
+    width: 100vw;
+}
+
+footer .copyright {
+    padding-top: 30px;
+    letter-spacing: 2px;
 }
 
 .card{
@@ -47,4 +123,8 @@ p{
     height: auto;
 }
 
-/* ここから防犯マップにて追記 */
+a {
+	outline: none;
+	color: inherit;
+	text-decoration: none;
+}
