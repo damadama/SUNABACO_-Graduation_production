@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <form action="/form_py" method="post" enctype="multipart/form-data">
+
+        <!-- 性別 -->
+        <input type="text" list="sexlist" name = "sex">
+        <datalist id="sexlist">
+            <option value="男性">man</option>
+            <option value="女性">woman</option>
+        </datalist>
+        <!-- 年齢 -->
+        <p>年齢</p>
+        <input type="text" list="agelist" name = "age">
+        <datalist id="agelist">
+            <option value="10歳以下">10歳以下</option>
+            <option value="10代">10代</option>
+            <option value="20代">20代</option>
+            <option value="30代">30代</option>
+            <option value="40代">40代</option>
+            <option value="50代">50代</option>
+            <option value="60代">60代</option>
+            <option value="70歳以上">70歳以上</option>
+        </datalist>
+        <!-- 日時 -->
+        <label>年/月/日 +時間<input type="datetime-local" name = "datetime"></label>
+        <!-- 場所 -->
+        <input type="text" name = "place">
+        <!-- 噂＆事実 -->
+        <input type="text" name = "">
+        <!-- 分類 -->
+        <input type="text" list="typelist" name = "type">
+        <datalist id="typelist">
+            <option value="声かけ">声かけ</option>
+            <option value="痴漢">痴漢</option>
+            <option value="付きまとい">付きまとい</option>
+            <option value="不審者">不審者</option>
+            <option value="公然わいせつ">公然わいせつ</option>
+            <option value="暴行">暴行</option>
+            <option value="ひったくり">ひったくり</option>
+            <option value="その他">その他</option>
+        </datalist>
+        <!-- 詳細 -->
+        <input type="text" name = "detail">
+        <input type="submit" name = "save" value="submit">    </form>
+
+    <!--元データ -->
+    <!-- <form action="/add_py" method="post">
+        <input type="text" name = "task">
+        <input type="submit" name ="save" value="submit">
+    </form> -->
+
+
+    <a href="/home">ホームへ</a>
+{% endblock %}
