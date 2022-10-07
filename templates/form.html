@@ -2,48 +2,136 @@
 
 {% block content %}
 
-    <form action="/form_py" method="post" enctype="multipart/form-data">
+    <form action="/form_py" method="post" enctype="multipart/form-data" id="formId">
+
+        <!-- 日時 -->
+        <div class="formCard">
+            <p>発生日時</p>
+            <input type="datetime-local" name = "datetime">
+        </div>
+
+        <!-- 年齢 -->
+        <div class="formCard">
+            <p>年齢</p>
+            <input type="text" list="agelist" name = "age">
+            <datalist id="agelist">
+                <option value="10歳以下">10歳以下</option>
+                <option value="10代">10代</option>
+                <option value="20代">20代</option>
+                <option value="30代">30代</option>
+                <option value="40代">40代</option>
+                <option value="50代">50代</option>
+                <option value="60代">60代</option>
+                <option value="70歳以上">70歳以上</option>
+            </datalist>
+        </div>
 
         <!-- 性別 -->
-        <input type="text" list="sexlist" name = "sex">
-        <datalist id="sexlist">
-            <option value="男性">man</option>
-            <option value="女性">woman</option>
-        </datalist>
-        <!-- 年齢 -->
-        <p>年齢</p>
-        <input type="text" list="agelist" name = "age">
-        <datalist id="agelist">
-            <option value="10歳以下">10歳以下</option>
-            <option value="10代">10代</option>
-            <option value="20代">20代</option>
-            <option value="30代">30代</option>
-            <option value="40代">40代</option>
-            <option value="50代">50代</option>
-            <option value="60代">60代</option>
-            <option value="70歳以上">70歳以上</option>
-        </datalist>
-        <!-- 日時 -->
-        <label>年/月/日 +時間<input type="datetime-local" name = "datetime"></label>
+        <div class="formCard">
+            <p>性別</p>
+            <input type="text" list="sexlist" name = "sex">
+            <datalist id="sexlist">
+                <option value="男性">man</option>
+                <option value="女性">woman</option>
+            </datalist>
+        </div>
+
         <!-- 場所 -->
-        <input type="text" name = "place">
-        <!-- 噂＆事実 -->
-        <input type="text" name = "">
+        <div class="formCard">
+            <p>場所</p>
+            <div id="geocodeLat">geocode:data</div>
+            <div id="geocodeLon">geocode:data</div>
+            <div id="myMap" style="width:60%;height:35%;float:left"></div>
+            <input id="inputLat" type="hidden" name = "location_conv_ido" style="height:30%">
+            <input id="inputLon" type="hidden" name = "location_conv_keido" style="height:30%">
+            <script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Am1A8omJimUSiKmqMekNEEiVLN6owRv3ueFbxXDJ-GV2kl2Fg3NzPPgtFT56pwRz' async defer></script>
+            <script src="../static/js/BmapQuery.js"></script>
+
+            <script>
+                //****************************************************************************************
+                // BingMaps&BmapQuery
+                //****************************************************************************************
+                //Init
+                function GetMap(){
+                    //------------------------------------------------------------------------
+                    //1. Instance
+                    //------------------------------------------------------------------------
+                    const map = new Bmap("#myMap");
+                    
+                    //------------------------------------------------------------------------
+                    //2. Display Map
+                    //   startMap(lat, lon, "MapType", Zoom[1~20]);
+                    //   MapType:[load, aerial,canvasDark,canvasLight,birdseye,grayscale,streetside]
+                    //--------------------------------------------------
+                    map.startMap(33.58996049431529, 130.42046689560374, "load", 15);
+                
+                    //----------------------------------------------------
+                    //3. Geocode(2 patterns)
+                    // getGeocode("searchQuery",callback);
+                    //----------------------------------------------------
+                    
+                    //A. Address "Seattle"
+                    // map.getGeocode("Seattle", function(data){
+                    //     console.log(data);          //Get Geocode ObjectData
+                    //     const lat = data.latitude;  //Get latitude
+                    //     const lon = data.longitude; //Get longitude
+                    //     document.querySelector("#geocode").innerHTML=lat+','+lon;
+                    // });
+                    
+                    //B.Get geocode of click location
+                    map.onGeocode("click", function(data){
+                        map.deletePin();
+                        console.log(data);                   //Get Geocode ObjectData
+                        const lat = data.location.latitude;  //Get latitude
+                        const lon = data.location.longitude; //Get longitude
+                        document.querySelector("#geocodeLat").innerHTML=lat;
+                        document.querySelector("#geocodeLon").innerHTML=lon;
+                        let pin = map.pin(lat, lon, "#ff0000");
+                        var Myelement = document.getElementById("inputLat");
+                        Myelement.value = lat;
+                        var Myelement = document.getElementById("inputLon");
+                        Myelement.value = lon;
+                    });
+                    // Microsoft.Maps.Events.removeHandler(pushpinClick);
+                    // Microsoft.Maps.Events.removeHandler(mapClick);
+                }
+                    
+            </script>
+        </div>
+        <br>
         <!-- 分類 -->
-        <input type="text" list="typelist" name = "type">
-        <datalist id="typelist">
-            <option value="声かけ">声かけ</option>
-            <option value="痴漢">痴漢</option>
-            <option value="付きまとい">付きまとい</option>
-            <option value="不審者">不審者</option>
-            <option value="公然わいせつ">公然わいせつ</option>
-            <option value="暴行">暴行</option>
-            <option value="ひったくり">ひったくり</option>
-            <option value="その他">その他</option>
-        </datalist>
+        <div class="formCard">
+            <p>分類</p>
+            <input type="text" list="typelist" name = "class_incident">
+            <datalist id="typelist">
+                <option value="声かけ">声かけ</option>
+                <option value="痴漢">痴漢</option>
+                <option value="付きまとい">付きまとい</option>
+                <option value="不審者">不審者</option>
+                <option value="公然わいせつ">公然わいせつ</option>
+                <option value="暴行">暴行</option>
+                <option value="ひったくり">ひったくり</option>
+                <option value="その他">その他</option>
+            </datalist>
+        </div>
+
+        <!-- 噂＆事実 -->
+        <div class="formCard">
+            <p>噂or事実</p>
+            <input type="text" list="ForR" name = "class_fact_rumor">
+            <datalist id="ForR">
+                <option value="噂">噂</option>
+                <option value="事実">事実</option>
+            </datalist>
+        </div>
+
         <!-- 詳細 -->
-        <input type="text" name = "detail">
-        <input type="submit" name = "save" value="submit">    </form>
+        <div class="formCard">
+            <p>詳細</p>
+            <textarea name = "detail" rows="4"></textarea>
+        </div>
+        
+        <input type="submit" name = "save" value="確定"></form>
 
     <!--元データ -->
     <!-- <form action="/add_py" method="post">

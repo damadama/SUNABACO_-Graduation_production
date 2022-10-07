@@ -26,9 +26,9 @@ app.debug = True
 def hello_world():
     return "<p>Hello, World!</p>"
 
-@app.route("/goodbye")
-def good_bye():
-    return "<p>GoodBye</p>"
+@app.route("/form")
+def form():
+    return render_template("form.html")
 
 @app.route("/sc")
 def sc():
