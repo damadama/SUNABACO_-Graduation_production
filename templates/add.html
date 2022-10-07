@@ -1,0 +1,21 @@
+
+{% extends "base.html" %}
+
+
+{% block content %}
+
+    <form action="/add_py" method="post" enctype="multipart/form-data">
+        <input type="file" id="submit_img" name="avatar">
+        <input type="text" name = "task">
+        <input type="submit" id="img_submit_btn" name ="save" value="submit">
+    </form>
+
+    <!--元データ -->
+    <!-- <form action="/add_py" method="post">
+        <input type="text" name = "task">
+        <input type="submit" name ="save" value="submit">
+    </form> -->
+
+
+    <a href="/home">ホームへ</a>
+{% endblock %}
