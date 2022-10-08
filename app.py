@@ -4,7 +4,7 @@ from email.headerregistry import Address
 import os
 from pickletools import long1
 from queue import PriorityQueue
-from flask import Flask,render_template,request,redirect,session,url_for
+from flask import Flask,render_template,request,redirect,session,url_for,json
 
 from bs4 import BeautifulSoup
 import sqlite3,requests,datetime
@@ -13,6 +13,8 @@ import sqlite3,requests,datetime
 from werkzeug.utils import secure_filename
 # 画像のダウンロード
 from flask import send_from_directory
+
+import csv
 
 # gittest221004
 
@@ -345,7 +347,7 @@ def map():
     # カーソルを操作するSQLを書く
     # c.execute("select * from tweet where id = ?",(id,))
     c.execute("select * from toukou")
-    g.execute("select * from fukuokakenkei_opendata")
+    g.execute("select * from fukuokakenkei_opendata where location_conv_ido != ''")
     
     
     # pythonに持ってくる
@@ -362,8 +364,6 @@ def map():
 
     address_dict_opendata = {}
     address_list_opendata = []
-
-
     
     for map_data_r in map_data:
         address_dict["latitude"] =map_data_r[5]
@@ -374,6 +374,16 @@ def map():
         address_dict_opendata["latitude"] =map_data_r_opendata[13]
         address_dict_opendata["longitude"] = map_data_r_opendata[14]
         address_list_opendata.append(address_dict_opendata.copy())
+
+    #確認用csv出力
+    # with open('data/temp/sample_writer.csv', 'w') as f:
+    #     writer = csv.writer(f)
+    #     writer.writerow(address_list_opendata)
+
+
+    # jsonファイル読み込み
+    # with open('static/js/test.geojson') as f:
+    #     jdata = json.load(f)
         
     return render_template("map.html",html_map_data=address_list,html_map_data_opendata=address_list_opendata)    
     
