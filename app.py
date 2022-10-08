@@ -339,27 +339,43 @@ def map():
     
     #データ取得のためのカーソル作成
     c=conn.cursor()
+    g=conn.cursor()
+    
     
     # カーソルを操作するSQLを書く
     # c.execute("select * from tweet where id = ?",(id,))
     c.execute("select * from toukou")
+    g.execute("select * from fukuokakenkei_opendata")
+    
     
     # pythonに持ってくる
     map_data = c.fetchall()
+    map_data_opendata = g.fetchall()
     
     # 接続終了
     c.close()
+    g.close()
 
     # 緯度・経度の形に格納
     address_dict = {}
     address_list = []
+
+    address_dict_opendata = {}
+    address_list_opendata = []
+
+
     
     for map_data_r in map_data:
         address_dict["latitude"] =map_data_r[5]
         address_dict["longitude"] = map_data_r[6]
         address_list.append(address_dict.copy())
+
+    for map_data_r_opendata in map_data_opendata:
+        address_dict_opendata["latitude"] =map_data_r_opendata[13]
+        address_dict_opendata["longitude"] = map_data_r_opendata[14]
+        address_list_opendata.append(address_dict_opendata.copy())
         
-    return render_template("map.html",html_map_data=address_list)    
+    return render_template("map.html",html_map_data=address_list,html_map_data_opendata=address_list_opendata)    
     
     
 @app.route("/edit2")

@@ -1,16 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <p>ここは全体mapですよ</p>
 
-    {% for mapdata in html_map_data %}
+    <!-- test用
+    {% for mapdata in html_map_data_opendata %}
         <p>{{mapdata}}</p>
     {% endfor %}
-
-    <input type="button" value="button" id="btn">
+    test用 -->
 
     <div>
-        <h1>Basic template</h1>
+        <h1>全体MAP</h1>
         <div id="myMap" style='width:100%;height:450px;'></div>    
     </div>
 
@@ -20,15 +19,17 @@
 
         //htmlからjsへ変数の値を持ってくる
         let address={{html_map_data | tojson}};
+        let address_opendata={{html_map_data_opendata | tojson}};
+        
 
         //test---------------------------
         //let test=[{'latitude': 33.5901838, 'longitude': 130.4016888},{'latitude': 33.5901239, 'longitude': 130.4016429}];
-        let test=[{latitude: 33.5901838, longitude: 130.4016888},{latitude: 33.5901239, longitude: 130.4016429}]
-        function butotnClick(){
-            alert(test);
-        }
-        let button = document.getElementById('btn');
-        button.addEventListener('click', butotnClick);
+        //let test=[{latitude: 33.5901838, longitude: 130.4016888},{latitude: 33.5901239, longitude: 130.4016429}]
+        //function butotnClick(){
+        //    alert(test);
+        //}
+        //let button = document.getElementById('btn');
+        //button.addEventListener('click', butotnClick);
         //test---------------------------
 
         function GetMap() {
@@ -61,6 +62,29 @@
             group[j].push(pin[j]);
             map.entities.push(group[j]);
             }
+
+            //for文でデータがある分だけピンを立てる処理を実行 address_opendata用
+            let pin_opendata=[]
+            let group_opendata=[]
+            for (let j = 0; j<address_opendata.length; j++){
+            //Create custom Pushpin
+            pin_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
+                color: 'blue',            //Color
+                draggable:true,          //MouseDraggable
+                enableClickedStyle:true, //Click
+                enableHoverStyle:true,   //MouseOver
+                visible:true,             //show/hide
+                //title:'test'           //pushpin title
+                //subtitle:"表参道",        //Pushpin subtitle
+                //text:"G"            
+            });
+
+            //Add the pushpin to the map
+            group_opendata[j]=new Microsoft.Maps.EntityCollection();
+            group_opendata[j].push(pin_opendata[j]);
+            map.entities.push(group_opendata[j]);
+            }
+
         }
     </script>
 
