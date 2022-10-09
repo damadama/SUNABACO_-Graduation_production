@@ -29,75 +29,49 @@
         let address={{html_map_data | tojson}};
         let address_opendata={{html_map_data_opendata | tojson}};
 
-        var earthquakeFeed = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson';
+        //var earthquakeFeed = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson';
         //var mapFeed={"type":"Feature","properties":{"mag":4.3,"place":"39 km SW of Andalgalá, Argentina","time":1665203444253,"updated":1665204612040,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us6000is0s","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us6000is0s.geojson","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"reviewed","tsunami":0,"sig":284,"net":"us","code":"6000is0s","ids":",us6000is0s,","sources":",us,","types":",origin,phase-data,","nst":31,"dmin":3.215,"rms":0.52,"gap":66,"magType":"mb","type":"earthquake","title":"M 4.3 - 39 km SW of Andalgalá, Argentina"},"geometry":{"type":"Point","coordinates":[-66.6175,-27.8189,161.115]},"id":"us6000is0s"},
         
-
-
-        //test---------------------------
-        //let test=[{'latitude': 33.5901838, 'longitude': 130.4016888},{'latitude': 33.5901239, 'longitude': 130.4016429}];
-        //let test=[{latitude: 33.5901838, longitude: 130.4016888},{latitude: 33.5901239, longitude: 130.4016429}]
-        //function butotnClick(){
-        //    alert(test);
-        //}
-        //let button = document.getElementById('btn');
-        //button.addEventListener('click', butotnClick);
-        //test---------------------------
-        
-        //33.5901838, 130.40
-
         function GetMap() {
             let map = new Microsoft.Maps.Map('#myMap', {
                 center: new Microsoft.Maps.Location(33.5901838, 130.40), //Location center position
                 zoom: 15  //Zoom:1=zoomOut, 20=zoomUp[ 1~20 ]
             });
 
-            //let address=[{'latitude': 33.5901838, 'longitude': 130.4016888},{'latitude': 33.5901239, 'longitude': 130.4016429}];
-            //let address=[{"latitude":47.6149,"longitude":-122.1941},{latitude:47.61,longitude:-122.1941}];
-
             //for文でデータがある分だけピンを立てる処理を実行
             let pin=[]
-            let group=[]
             for (let j = 0; j<address.length; j++){
             //Create custom Pushpin
-            pin[j] = new Microsoft.Maps.Pushpin(address[j], {
-                color: 'red',            //Color
-                //draggable:true,          //MouseDraggable
-                //enableClickedStyle:true, //Click
-                //enableHoverStyle:true,   //MouseOver
-                //visible:true,             //show/hide
-                //title:'test'           //pushpin title
-                //subtitle:"表参道",        //Pushpin subtitle
-                //text:"G"            
-            });
+                pin[j] = new Microsoft.Maps.Pushpin(address[j], {
+                    color: 'red',            //Color
+                    //draggable:true,          //MouseDraggable
+                    //enableClickedStyle:true, //Click
+                    //enableHoverStyle:true,   //MouseOver
+                    //visible:true,             //show/hide
+                    //title:'test'           //pushpin title
+                    //subtitle:"表参道",        //Pushpin subtitle
+                    //text:"G"            
+                });
 
-            //Add the pushpin to the map
-            //group[j]=new Microsoft.Maps.EntityCollection();
-            //group[j].push(pin[j]);
-            //map.entities.push(group[j]);
             }
             //map.entities.push(pin);
 
             //for文でデータがある分だけピンを立てる処理を実行 address_opendata用
             let pin_opendata=[]
-            let group_opendata=[]
-            for (let j = 0; j<address_opendata.length; j++){
-            //Create custom Pushpin
-            pin_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
-                color: 'blue',            //Color
-                //draggable:true,          //MouseDraggable
-                //enableClickedStyle:true, //Click
-                //enableHoverStyle:true,   //MouseOver
-                //visible:true,             //show/hide
-                //title:'test'           //pushpin title
-                //subtitle:"表参道",        //Pushpin subtitle
-                //text:"G"            
-            });
 
-            //Add the pushpin to the map
-            //group_opendata[j]=new Microsoft.Maps.EntityCollection();
-            //group_opendata[j].push(pin_opendata[j]);
-            //map.entities.push(group_opendata[j]);
+            for (let j = 0; j<address_opendata.length; j++){
+                //Create custom Pushpin
+                pin_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
+                    color: 'blue',            //Color
+                    //draggable:true,          //MouseDraggable
+                    //enableClickedStyle:true, //Click
+                    //enableHoverStyle:true,   //MouseOver
+                    //visible:true,             //show/hide
+                    title:'test',           //pushpin title
+                    subtitle:'表参道',        //Pushpin subtitle
+                    text:"G"            
+                });
+
             }
             //後でコメントアウト解除する
             //map.entities.push(pin_opendata);
@@ -106,11 +80,17 @@
             //Load the Clustering module.
             Microsoft.Maps.loadModule("Microsoft.Maps.Clustering", function () {
                 //Generate 1,000 random pushpins in the map view. 
-                var pins = Microsoft.Maps.TestDataGenerator.getPushpins(1000, map.getBounds());
+                //var pins = Microsoft.Maps.TestDataGenerator.getPushpins(1000, map.getBounds());
                 //Create a ClusterLayer and add it to the map.
-                clusterLayer = new Microsoft.Maps.ClusterLayer(pin);
+                clusterLayer = new Microsoft.Maps.ClusterLayer(pin,{
+                    clusteredPinCallback: createCustomClusteredPin,
+                    gridSize: 50
+                });
                 map.layers.insert(clusterLayer);
-                clusterLayer1 = new Microsoft.Maps.ClusterLayer(pin_opendata);
+                clusterLayer1 = new Microsoft.Maps.ClusterLayer(pin_opendata,{
+                    clusteredPinCallback: createCustomClusteredPin,
+                    gridSize: 50
+                });
                 map.layers.insert(clusterLayer1);
             });
 
@@ -132,35 +112,35 @@
             //     });
             // });
 
-            // //A function that defines how clustered pins are rendered.
-            // function createCustomClusteredPin(cluster) {
-            //     //Get the number of pushpins in the cluster
-            //     var clusterSize = cluster.containedPushpins.length;
+            //A function that defines how clustered pins are rendered.
+            function createCustomClusteredPin(cluster) {
+                //Get the number of pushpins in the cluster
+                var clusterSize = cluster.containedPushpins.length;
 
-            //     var radius = 20;    //Default radius to 20 pixels.
-            //     var fillColor = 'lime'; 	//Default to lime green.
+                var radius = 10;    //Default radius to 20 pixels.
+                var fillColor = 'lime'; 	//Default to lime green.                
 
-            //     if (clusterSize >= 750) {
-            //         radius = 40;   //If point_count >= 750, radius is 40 pixels.
-            //         fillColor = 'red';    //If the point_count >= 750, color is red.
-            //     } else if (clusterSize >= 100) {
-            //         radius = 30;    //If point_count >= 100, radius is 30 pixels.
-            //         fillColor = 'yellow';    //If the point_count >= 100, color is yellow.
-            //     }
+                if (clusterSize >= 750) {
+                    radius = 20;   //If point_count >= 750, radius is 40 pixels.
+                    fillColor = 'red';    //If the point_count >= 750, color is red.
+                } else if (clusterSize >= 100) {
+                    radius = 15;    //If point_count >= 100, radius is 30 pixels.
+                    fillColor = 'yellow';    //If the point_count >= 100, color is yellow.
+                }
 
-            //     //Create an SVG string of a circle with the specified radius and color.
-            //     var svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="', (radius * 2), '" height="', (radius * 2), '">',
-            //         '<circle cx="', radius, '" cy="', radius, '" r="', radius, '" fill="', fillColor, '"/>',
-            //         '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" style="font-size:12px;font-family:arial;fill:black;" >{text}</text>',
-            //         '</svg>'];
+                //Create an SVG string of a circle with the specified radius and color.
+                var svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="', (radius * 2), '" height="', (radius * 2), '">',
+                    '<circle cx="', radius, '" cy="', radius, '" r="', radius, '" fill="', fillColor, '"/>',
+                    '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" style="font-size:12px;font-family:arial;fill:black;" >{text}</text>',
+                    '</svg>'];
 
-            //     //Customize the clustered pushpin using the generated SVG and anchor on its center.
-            //     cluster.setOptions({
-            //         icon: svg.join(''),
-            //         anchor: new Microsoft.Maps.Point(radius, radius),
-            //         textOffset: new Microsoft.Maps.Point(0, radius - 8) //Subtract 8 to compensate for height of text.
-            //     });
-            // }
+                //Customize the clustered pushpin using the generated SVG and anchor on its center.
+                cluster.setOptions({
+                    icon: svg.join(''),
+                    anchor: new Microsoft.Maps.Point(radius, radius),
+                    textOffset: new Microsoft.Maps.Point(0, radius - 8) //Subtract 8 to compensate for height of text.
+                });
+            }
             
 
         }
