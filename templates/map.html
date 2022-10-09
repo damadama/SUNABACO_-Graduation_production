@@ -38,11 +38,16 @@
                 zoom: 15  //Zoom:1=zoomOut, 20=zoomUp[ 1~20 ]
             });
 
+            //Add an infobox to the map.
+            infobox = new Microsoft.Maps.Infobox(map.getCenter(), { visible: false });
+            infobox.setMap(map);
+
+
             //for文でデータがある分だけピンを立てる処理を実行
-            let pin=[]
+            let pins=[]
             for (let j = 0; j<address.length; j++){
-            //Create custom Pushpin
-                pin[j] = new Microsoft.Maps.Pushpin(address[j], {
+                //Create custom Pushpin
+                pins[j] = new Microsoft.Maps.Pushpin(address[j], {
                     color: 'red',            //Color
                     //draggable:true,          //MouseDraggable
                     //enableClickedStyle:true, //Click
@@ -50,18 +55,22 @@
                     //visible:true,             //show/hide
                     title:address[j].date+ "\n" +address[j].incident,           //pushpin title
                     //subtitle:"表参道",        //Pushpin subtitle
-                    //text:"G"            
+                    text:"投稿"            
                 });
-
+                pins[j].metadata = {
+                    title: 'Pin Title',
+                    description: 'Pin discription'
+                };
+                Microsoft.Maps.Events.addHandler(pins[j], 'click', pushpinClicked);
             }
             //map.entities.push(pin);
 
             //for文でデータがある分だけピンを立てる処理を実行 address_opendata用
-            let pin_opendata=[]
+            let pins_opendata=[]
 
             for (let j = 0; j<address_opendata.length; j++){
                 //Create custom Pushpin
-                pin_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
+                pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
                     color: 'blue',            //Color
                     //draggable:true,          //MouseDraggable
                     //enableClickedStyle:true, //Click
@@ -69,9 +78,13 @@
                     //visible:true,             //show/hide
                     title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
                     //subtitle:'aaaaaa'        //Pushpin subtitle
-                    //text:"G"            
+                    text:"OD"            
                 });
-
+                pins_opendata[j].metadata = {
+                    title: 'Pin Title',
+                    description: 'Pin discription'
+                };
+                Microsoft.Maps.Events.addHandler(pins_opendata[j], 'click', pushpinClicked);
             }
             //後でコメントアウト解除する
             //map.entities.push(pin_opendata);
@@ -81,15 +94,19 @@
             Microsoft.Maps.loadModule("Microsoft.Maps.Clustering", function () {
                 //Generate 1,000 random pushpins in the map view. 
                 //var pins = Microsoft.Maps.TestDataGenerator.getPushpins(1000, map.getBounds());
+                
                 //Create a ClusterLayer and add it to the map.
-                clusterLayer = new Microsoft.Maps.ClusterLayer(pin,{
+                clusterLayer = new Microsoft.Maps.ClusterLayer(pins,{
                     clusteredPinCallback: createCustomClusteredPin,
-                    gridSize: 50
+                    gridSize: 50,
+                    //callback: createPushpinList
                 });
                 map.layers.insert(clusterLayer);
-                clusterLayer1 = new Microsoft.Maps.ClusterLayer(pin_opendata,{
+                
+                clusterLayer1 = new Microsoft.Maps.ClusterLayer(pins_opendata,{
                     clusteredPinCallback: createCustomClusteredPin,
-                    gridSize: 50
+                    gridSize: 50,
+                    //callback: createPushpinList
                 });
                 map.layers.insert(clusterLayer1);
             });
@@ -123,9 +140,88 @@
                     textOffset: new Microsoft.Maps.Point(0, radius - 8) //Subtract 8 to compensate for height of text.
                 });
             }
-            //レイヤーの追加＋レイヤーカスタマイズend            
+            //レイヤーの追加＋レイヤーカスタマイズend
 
         }
+        
+        function createCustomClusterPushpins(cluster) {
+            //Create a title for the cluster.
+            cluster.setOptions({
+                title: 'Cluster of ' + cluster.containedPushpins.length + ' pins'
+            });
+
+            //Add handler for the cluster click event.
+            Microsoft.Maps.Events.addHandler(cluster, 'click', pushpinClicked);
+        }
+
+        //function pushpinClicked(e) {
+        //    //Show an infobox when a pushpin is clicked.
+        //    showInfobox(e.target);
+        //}
+
+        function createPushpinList() {
+            //Create a list of displayed pushpins each time clustering layer updates.
+
+            if (clusterLayer != null) {
+                infobox.setOptions({ visible: false });
+
+                //Get all pushpins that are currently displayed.
+                var data = clusterLayer.getDisplayedPushpins();
+                var output = [];
+
+                //Create a list of links for each pushpin that opens up the infobox for it.
+                for (var i = 0; i < data.length; i++) {
+                    output.push("<a href='javascript:void(0);' onclick='showInfoboxByGridKey(", data[i].gridKey, ");'>");
+                    output.push(data[i].getTitle(), "</a><br/>");
+                }
+
+                document.getElementById('listOfPins').innerHTML = output.join('');
+            }
+        }
+
+        function showInfoboxByGridKey(gridKey) {
+            //Look up the cluster or pushpin by gridKey.
+            var clusterPin = clusterLayer.getClusterPushpinByGridKey(gridKey);
+
+            //Show an infobox for the cluster or pushpin.
+            showInfobox(clusterPin);
+        }
+
+        
+        // function showInfobox(pin) {
+        //     var description = [];
+
+        //     //Check to see if the pushpin is a cluster.
+        //     if (pin.containedPushpins) {
+
+        //         //Create a list of all pushpins that are in the cluster.
+        //         description.push('<div style="max-height:75px;overflow-y:auto;"><ul>');
+        //         for (var i = 0; i < pin.containedPushpins.length; i++) {
+        //             description.push('<li>', pin.containedPushpins[i].getTitle(), '</li>');
+        //         }
+        //         description.push('</ul></div>');
+        //     }
+
+        //     //Display an infobox for the pushpin.
+        //     infobox.setOptions({
+        //         title: pin.getTitle(),
+        //         location: pin.getLocation(),
+        //         description: description.join(''),
+        //         visible: true
+        // });
+        function pushpinClicked(e) {
+            //Make sure the infobox has metadata to display.
+            if (e.target.metadata) {
+                //Set the infobox options with the metadata of the pushpin.
+                infobox.setOptions({
+                    location: e.target.getLocation(),
+                    title: e.target.metadata.title,
+                    description: e.target.metadata.description,
+                    visible: true
+                });
+            }
+        }
+
     </script>
 
 
