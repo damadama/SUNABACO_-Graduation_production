@@ -4,7 +4,7 @@ from email.headerregistry import Address
 import os
 from pickletools import long1
 from queue import PriorityQueue
-from flask import Flask,render_template,request,redirect,session,url_for
+from flask import Flask,render_template,request,redirect,session,url_for,json
 
 from bs4 import BeautifulSoup
 import sqlite3,requests,datetime
@@ -13,6 +13,8 @@ import sqlite3,requests,datetime
 from werkzeug.utils import secure_filename
 # 画像のダウンロード
 from flask import send_from_directory
+
+import csv
 
 # gittest221004
 
@@ -339,45 +341,53 @@ def map():
     
     #データ取得のためのカーソル作成
     c=conn.cursor()
+    g=conn.cursor()
+    
     
     # カーソルを操作するSQLを書く
     # c.execute("select * from tweet where id = ?",(id,))
     c.execute("select * from toukou")
+    g.execute("select * from fukuokakenkei_opendata where location_conv_ido != ''")
+    
     
     # pythonに持ってくる
     map_data = c.fetchall()
+    map_data_opendata = g.fetchall()
     
     # 接続終了
     c.close()
+    g.close()
 
     # 緯度・経度の形に格納
     address_dict = {}
     address_list = []
+
+    address_dict_opendata = {}
+    address_list_opendata = []
     
     for map_data_r in map_data:
         address_dict["latitude"] =map_data_r[5]
         address_dict["longitude"] = map_data_r[6]
+        address_dict["incident"] = map_data_r[7] 
+        address_dict["date"] = map_data_r[1][0:10]
         address_list.append(address_dict.copy())
+
+    for map_data_r_opendata in map_data_opendata:
+        address_dict_opendata["latitude"] =map_data_r_opendata[13]
+        address_dict_opendata["longitude"] = map_data_r_opendata[14]
+        address_dict_opendata["incident"] = map_data_r_opendata[1] + "_" +map_data_r_opendata[2] 
+        address_dict_opendata["date"] = map_data_r_opendata[9]
+        address_list_opendata.append(address_dict_opendata.copy())
+
+    #確認用csv出力
+    # with open('data/temp/sample_writer.csv', 'w') as f:
+    #     writer = csv.writer(f)
+    #     writer.writerow(address_list_opendata)
+
+
+    # jsonファイル読み込み
+    # with open('static/js/test.geojson') as f:
+    #     jdata = json.load(f)
         
-    return render_template("map.html",html_map_data=address_list)    
+    return render_template("map.html",html_map_data=address_list,html_map_data_opendata=address_list_opendata)    
     
-    
-@app.route("/edit2")
-def edit2():
-        # DBに接続
-        conn = sqlite3.connect("bouhan_map.db")
-        
-        #データ取得のためのカーソル作成
-        c=conn.cursor()
-        
-        # カーソルを操作するSQLを書く
-        c.execute("select * from toukou")
-        
-        # pythonに持ってくる
-        tweet_data = c.fetchall()
-        
-        # 接続終了
-        c.close()
-        
-        
-        return render_template("edit.html",html_tweet_data=tweet_data)
