@@ -373,6 +373,8 @@ def map():
     for map_data_r_opendata in map_data_opendata:
         address_dict_opendata["latitude"] =map_data_r_opendata[13]
         address_dict_opendata["longitude"] = map_data_r_opendata[14]
+        address_dict_opendata["title"] = map_data_r_opendata[1] + "_" +map_data_r_opendata[2] 
+        address_dict_opendata["date"] = map_data_r_opendata[9]
         address_list_opendata.append(address_dict_opendata.copy())
 
     #確認用csv出力
@@ -387,23 +389,3 @@ def map():
         
     return render_template("map.html",html_map_data=address_list,html_map_data_opendata=address_list_opendata)    
     
-    
-@app.route("/edit2")
-def edit2():
-        # DBに接続
-        conn = sqlite3.connect("bouhan_map.db")
-        
-        #データ取得のためのカーソル作成
-        c=conn.cursor()
-        
-        # カーソルを操作するSQLを書く
-        c.execute("select * from toukou")
-        
-        # pythonに持ってくる
-        tweet_data = c.fetchall()
-        
-        # 接続終了
-        c.close()
-        
-        
-        return render_template("edit.html",html_tweet_data=tweet_data)

@@ -67,9 +67,9 @@
                     //enableClickedStyle:true, //Click
                     //enableHoverStyle:true,   //MouseOver
                     //visible:true,             //show/hide
-                    title:'test',           //pushpin title
-                    subtitle:'表参道',        //Pushpin subtitle
-                    text:"G"            
+                    title:address_opendata[j].date+ "\n" +address_opendata[j].title,           //pushpin title
+                    //subtitle:'aaaaaa',        //Pushpin subtitle
+                    //text:"G"            
                 });
 
             }
@@ -93,24 +93,6 @@
                 });
                 map.layers.insert(clusterLayer1);
             });
-
-
-
-            // //Load the GeoJSON and Clustering modules.            
-            // Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.Clustering'], function () {
-
-            //     //Load the GeoJSON data from a URL.
-            //     Microsoft.Maps.GeoJson.readFromUrl(earthquakeFeed, function (shapes) {
-
-            //         //Create a ClusterLayer with options and add it to the map.
-            //         clusterLayer = new Microsoft.Maps.ClusterLayer(shapes, {
-            //             clusteredPinCallback: createCustomClusteredPin,
-            //             gridSize: 50
-            //         });
-
-            //         map.layers.insert(clusterLayer);
-            //     });
-            // });
 
             //A function that defines how clustered pins are rendered.
             function createCustomClusteredPin(cluster) {
