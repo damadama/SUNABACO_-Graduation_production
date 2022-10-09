@@ -13,6 +13,12 @@
         <div id="myMap" style='width:100%;height:450px;'></div> 
     </div>
 
+
+    <body>
+        <br />
+        <div id="listOfPins" style="max-height:250px;width:250px;overflow-y:scroll;"></div>
+    </body>
+
 <!-- 
     <p>{{jdata}}</p>
     <p>aaa</p>    
@@ -29,11 +35,14 @@
         let address={{html_map_data | tojson}};
         let address_opendata={{html_map_data_opendata | tojson}};
 
+        var map, clusterLayer, clusterLayer1, infobox;
+
+
         //var earthquakeFeed = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson';
         //var mapFeed={"type":"Feature","properties":{"mag":4.3,"place":"39 km SW of Andalgalá, Argentina","time":1665203444253,"updated":1665204612040,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us6000is0s","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us6000is0s.geojson","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"reviewed","tsunami":0,"sig":284,"net":"us","code":"6000is0s","ids":",us6000is0s,","sources":",us,","types":",origin,phase-data,","nst":31,"dmin":3.215,"rms":0.52,"gap":66,"magType":"mb","type":"earthquake","title":"M 4.3 - 39 km SW of Andalgalá, Argentina"},"geometry":{"type":"Point","coordinates":[-66.6175,-27.8189,161.115]},"id":"us6000is0s"},
         
         function GetMap() {
-            let map = new Microsoft.Maps.Map('#myMap', {
+            map = new Microsoft.Maps.Map('#myMap', {
                 center: new Microsoft.Maps.Location(33.5901838, 130.40), //Location center position
                 zoom: 15  //Zoom:1=zoomOut, 20=zoomUp[ 1~20 ]
             });
@@ -86,10 +95,9 @@
                 };
                 Microsoft.Maps.Events.addHandler(pins_opendata[j], 'click', pushpinClicked);
             }
-            //後でコメントアウト解除する
             //map.entities.push(pin_opendata);
 
-            //レイヤーの追加＋レイヤーカスタマイズstart
+            //レイヤーの追加start
             //Load the Clustering module.
             Microsoft.Maps.loadModule("Microsoft.Maps.Clustering", function () {
                 //Generate 1,000 random pushpins in the map view. 
@@ -97,54 +105,61 @@
                 
                 //Create a ClusterLayer and add it to the map.
                 clusterLayer = new Microsoft.Maps.ClusterLayer(pins,{
-                    clusteredPinCallback: createCustomClusteredPin,
+                    //clusteredPinCallback: createCustomClusteredPin,
+                    clusteredPinCallback: createCustomClusterPushpins,
                     gridSize: 50,
-                    //callback: createPushpinList
+                    ///callback: createPushpinList
                 });
                 map.layers.insert(clusterLayer);
                 
                 clusterLayer1 = new Microsoft.Maps.ClusterLayer(pins_opendata,{
-                    clusteredPinCallback: createCustomClusteredPin,
+                    //clusteredPinCallback: createCustomClusteredPin,
+                    clusteredPinCallback: createCustomClusterPushpins,
                     gridSize: 50,
                     //callback: createPushpinList
                 });
                 map.layers.insert(clusterLayer1);
             });
+            //レイヤーの追加end
 
+            //クラスターの大きさ変更start------------------------
             //A function that defines how clustered pins are rendered.
-            function createCustomClusteredPin(cluster) {
-                //Get the number of pushpins in the cluster
-                var clusterSize = cluster.containedPushpins.length;
+            // function createCustomClusteredPin(cluster) {
+            //     //Get the number of pushpins in the cluster
+            //     var clusterSize = cluster.containedPushpins.length;
 
-                var radius = 10;    //Default radius to 20 pixels.
-                var fillColor = 'lime'; 	//Default to lime green.                
+            //     var radius = 10;    //Default radius to 20 pixels.
+            //     var fillColor = 'lime'; 	//Default to lime green.                
 
-                if (clusterSize >= 750) {
-                    radius = 20;   //If point_count >= 750, radius is 40 pixels.
-                    fillColor = 'red';    //If the point_count >= 750, color is red.
-                } else if (clusterSize >= 100) {
-                    radius = 15;    //If point_count >= 100, radius is 30 pixels.
-                    fillColor = 'yellow';    //If the point_count >= 100, color is yellow.
-                }
+            //     if (clusterSize >= 750) {
+            //         radius = 20;   //If point_count >= 750, radius is 40 pixels.
+            //         fillColor = 'red';    //If the point_count >= 750, color is red.
+            //     } else if (clusterSize >= 100) {
+            //         radius = 15;    //If point_count >= 100, radius is 30 pixels.
+            //         fillColor = 'yellow';    //If the point_count >= 100, color is yellow.
+            //     }
 
-                //Create an SVG string of a circle with the specified radius and color.
-                var svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="', (radius * 2), '" height="', (radius * 2), '">',
-                    '<circle cx="', radius, '" cy="', radius, '" r="', radius, '" fill="', fillColor, '"/>',
-                    '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" style="font-size:12px;font-family:arial;fill:black;" >{text}</text>',
-                    '</svg>'];
+            //     //Create an SVG string of a circle with the specified radius and color.
+            //     var svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="', (radius * 2), '" height="', (radius * 2), '">',
+            //         '<circle cx="', radius, '" cy="', radius, '" r="', radius, '" fill="', fillColor, '"/>',
+            //         '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" style="font-size:12px;font-family:arial;fill:black;" >{text}</text>',
+            //         '</svg>'];
 
-                //Customize the clustered pushpin using the generated SVG and anchor on its center.
-                cluster.setOptions({
-                    icon: svg.join(''),
-                    anchor: new Microsoft.Maps.Point(radius, radius),
-                    textOffset: new Microsoft.Maps.Point(0, radius - 8) //Subtract 8 to compensate for height of text.
-                });
-            }
-            //レイヤーの追加＋レイヤーカスタマイズend
+            //     //Customize the clustered pushpin using the generated SVG and anchor on its center.
+            //     cluster.setOptions({
+            //         icon: svg.join(''),
+            //         anchor: new Microsoft.Maps.Point(radius, radius),
+            //         textOffset: new Microsoft.Maps.Point(0, radius - 8) //Subtract 8 to compensate for height of text.
+            //     });
+            // }
+            //クラスターの大きさ変更end------------------------
 
         }
         
+        
         function createCustomClusterPushpins(cluster) {
+            
+            //clickしたらリスト表示start------------------------
             //Create a title for the cluster.
             cluster.setOptions({
                 title: 'Cluster of ' + cluster.containedPushpins.length + ' pins'
@@ -152,12 +167,42 @@
 
             //Add handler for the cluster click event.
             Microsoft.Maps.Events.addHandler(cluster, 'click', pushpinClicked);
+            //clickしたらリスト表示end------------------------
+
+            //クラスターの大きさ変更start------------------------
+            //Get the number of pushpins in the cluster
+            var clusterSize = cluster.containedPushpins.length;
+
+            var radius = 10;    //Default radius to 20 pixels.
+            var fillColor = 'lime'; 	//Default to lime green.                
+
+            if (clusterSize >= 750) {
+                radius = 20;   //If point_count >= 750, radius is 40 pixels.
+                fillColor = 'red';    //If the point_count >= 750, color is red.
+            } else if (clusterSize >= 100) {
+                radius = 15;    //If point_count >= 100, radius is 30 pixels.
+                fillColor = 'yellow';    //If the point_count >= 100, color is yellow.
+            }
+
+            //Create an SVG string of a circle with the specified radius and color.
+            var svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="', (radius * 2), '" height="', (radius * 2), '">',
+                '<circle cx="', radius, '" cy="', radius, '" r="', radius, '" fill="', fillColor, '"/>',
+                '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" style="font-size:12px;font-family:arial;fill:black;" >{text}</text>',
+                '</svg>'];
+
+            //Customize the clustered pushpin using the generated SVG and anchor on its center.
+            cluster.setOptions({
+                icon: svg.join(''),
+                anchor: new Microsoft.Maps.Point(radius, radius),
+                textOffset: new Microsoft.Maps.Point(0, radius - 8) //Subtract 8 to compensate for height of text.
+            });
+            //クラスターの大きさ変更end------------------------
         }
 
-        //function pushpinClicked(e) {
-        //    //Show an infobox when a pushpin is clicked.
-        //    showInfobox(e.target);
-        //}
+        function pushpinClicked(e) {
+            //Show an infobox when a pushpin is clicked.
+            showInfobox(e.target);
+        }
 
         function createPushpinList() {
             //Create a list of displayed pushpins each time clustering layer updates.
@@ -187,43 +232,44 @@
             showInfobox(clusterPin);
         }
 
-        
-        // function showInfobox(pin) {
-        //     var description = [];
+        function showInfobox(pin) {
+            var description = [];
 
-        //     //Check to see if the pushpin is a cluster.
-        //     if (pin.containedPushpins) {
+            //Check to see if the pushpin is a cluster.
+            if (pin.containedPushpins) {
 
-        //         //Create a list of all pushpins that are in the cluster.
-        //         description.push('<div style="max-height:75px;overflow-y:auto;"><ul>');
-        //         for (var i = 0; i < pin.containedPushpins.length; i++) {
-        //             description.push('<li>', pin.containedPushpins[i].getTitle(), '</li>');
-        //         }
-        //         description.push('</ul></div>');
-        //     }
-
-        //     //Display an infobox for the pushpin.
-        //     infobox.setOptions({
-        //         title: pin.getTitle(),
-        //         location: pin.getLocation(),
-        //         description: description.join(''),
-        //         visible: true
-        // });
-        function pushpinClicked(e) {
-            //Make sure the infobox has metadata to display.
-            if (e.target.metadata) {
-                //Set the infobox options with the metadata of the pushpin.
-                infobox.setOptions({
-                    location: e.target.getLocation(),
-                    title: e.target.metadata.title,
-                    description: e.target.metadata.description,
-                    visible: true
-                });
+                //Create a list of all pushpins that are in the cluster.
+                description.push('<div style="max-height:75px;overflow-y:auto;"><ul>');
+                for (var i = 0; i < pin.containedPushpins.length; i++) {
+                    description.push('<li>', pin.containedPushpins[i].getTitle(), '</li>');
+                }
+                description.push('</ul></div>');
             }
+
+            //Display an infobox for the pushpin.
+            infobox.setOptions({
+                title: pin.getTitle(),
+                location: pin.getLocation(),
+                description: description.join(''),
+                visible: true
+            });
         }
 
+
+        //↓はpushpinClicked2の2は後で消す
+        // function pushpinClicked2(e) {
+        //     //Make sure the infobox has metadata to display.
+        //     if (e.target.metadata) {
+        //         //Set the infobox options with the metadata of the pushpin.
+        //         infobox.setOptions({
+        //             location: e.target.getLocation(),
+        //             title: e.target.metadata.title,
+        //             description: e.target.metadata.description,
+        //             visible: true
+        //         });
+        //     }
+        // }
+
     </script>
-
-
 
 {% endblock %}
