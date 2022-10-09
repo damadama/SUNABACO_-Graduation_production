@@ -2,11 +2,11 @@
 
 {% block content %}
 
-    <!-- test用
-    {% for mapdata in html_map_data_opendata %}
+<!-- 
+    {% for mapdata in html_map_data %}
         <p>{{mapdata}}</p>
     {% endfor %}
-    test用 -->
+-->
 
     <div>
         <h1>全体MAP</h1>
@@ -48,7 +48,7 @@
                     //enableClickedStyle:true, //Click
                     //enableHoverStyle:true,   //MouseOver
                     //visible:true,             //show/hide
-                    //title:'test'           //pushpin title
+                    title:address[j].date+ "\n" +address[j].incident,           //pushpin title
                     //subtitle:"表参道",        //Pushpin subtitle
                     //text:"G"            
                 });
@@ -67,8 +67,8 @@
                     //enableClickedStyle:true, //Click
                     //enableHoverStyle:true,   //MouseOver
                     //visible:true,             //show/hide
-                    title:address_opendata[j].date+ "\n" +address_opendata[j].title,           //pushpin title
-                    //subtitle:'aaaaaa',        //Pushpin subtitle
+                    title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
+                    //subtitle:'aaaaaa'        //Pushpin subtitle
                     //text:"G"            
                 });
 
@@ -76,7 +76,7 @@
             //後でコメントアウト解除する
             //map.entities.push(pin_opendata);
 
-
+            //レイヤーの追加＋レイヤーカスタマイズstart
             //Load the Clustering module.
             Microsoft.Maps.loadModule("Microsoft.Maps.Clustering", function () {
                 //Generate 1,000 random pushpins in the map view. 
@@ -123,7 +123,7 @@
                     textOffset: new Microsoft.Maps.Point(0, radius - 8) //Subtract 8 to compensate for height of text.
                 });
             }
-            
+            //レイヤーの追加＋レイヤーカスタマイズend            
 
         }
     </script>

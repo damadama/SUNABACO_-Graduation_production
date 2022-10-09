@@ -368,12 +368,14 @@ def map():
     for map_data_r in map_data:
         address_dict["latitude"] =map_data_r[5]
         address_dict["longitude"] = map_data_r[6]
+        address_dict["incident"] = map_data_r[7] 
+        address_dict["date"] = map_data_r[1][0:10]
         address_list.append(address_dict.copy())
 
     for map_data_r_opendata in map_data_opendata:
         address_dict_opendata["latitude"] =map_data_r_opendata[13]
         address_dict_opendata["longitude"] = map_data_r_opendata[14]
-        address_dict_opendata["title"] = map_data_r_opendata[1] + "_" +map_data_r_opendata[2] 
+        address_dict_opendata["incident"] = map_data_r_opendata[1] + "_" +map_data_r_opendata[2] 
         address_dict_opendata["date"] = map_data_r_opendata[9]
         address_list_opendata.append(address_dict_opendata.copy())
 
