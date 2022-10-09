@@ -8,23 +8,20 @@
     {% endfor %}
 -->
 
-    <div>
+    <div id="main">
         <h1>全体MAP</h1>
+        <p>
+            <input type="text" id="from" value="福岡県福岡市"> <button id="get">Search</button>
+        </p>
         <div id="myMap" style='width:100%;height:450px;'></div> 
+        <div id='output'></div>
     </div>
 
-
-    <body>
-        <br />
-        <div id="listOfPins" style="max-height:250px;width:250px;overflow-y:scroll;"></div>
-    </body>
-
-<!-- 
-    <p>{{jdata}}</p>
-    <p>aaa</p>    
-    <p>{{html_map_data}}</p>
-    <p>bbb</p>
-    <p>{{html_map_data_opendata[0:100]}}</p> -->
+    <div style="text-align:left">
+        <p><br></p>
+        <p>出典：福岡県警察ウェブサイト</p>
+        <p>犯罪オープンデータ(https://www.police.pref.fukuoka.jp/tokei/index.html)を元にグラフを作成作成</p>
+    </div>
 
 
     <script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AuESy222px73uVstzTY2dGkbAwLSw3XkFadgykE28dK31K5iU4JuRQE61qhjRog5' async defer></script>
@@ -36,17 +33,14 @@
         let address_opendata={{html_map_data_opendata | tojson}};
 
         var map, clusterLayer, clusterLayer1, infobox;
-
-
-        //var earthquakeFeed = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson';
-        //var mapFeed={"type":"Feature","properties":{"mag":4.3,"place":"39 km SW of Andalgalá, Argentina","time":1665203444253,"updated":1665204612040,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us6000is0s","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us6000is0s.geojson","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"reviewed","tsunami":0,"sig":284,"net":"us","code":"6000is0s","ids":",us6000is0s,","sources":",us,","types":",origin,phase-data,","nst":31,"dmin":3.215,"rms":0.52,"gap":66,"magType":"mb","type":"earthquake","title":"M 4.3 - 39 km SW of Andalgalá, Argentina"},"geometry":{"type":"Point","coordinates":[-66.6175,-27.8189,161.115]},"id":"us6000is0s"},
+        let searchManager;
         
         function GetMap() {
             map = new Microsoft.Maps.Map('#myMap', {
                 center: new Microsoft.Maps.Location(33.5901838, 130.40), //Location center position
                 zoom: 15  //Zoom:1=zoomOut, 20=zoomUp[ 1~20 ]
             });
-
+            
             //Add an infobox to the map.
             infobox = new Microsoft.Maps.Infobox(map.getCenter(), { visible: false });
             infobox.setMap(map);
@@ -153,7 +147,9 @@
             //     });
             // }
             //クラスターの大きさ変更end------------------------
-
+            
+            //住所検索用
+            //Search();
         }
         
         
@@ -269,6 +265,69 @@
         //         });
         //     }
         // }
+
+        //検索用function_start-------------------------------------------------------------------
+        function Search() {
+            if (!searchManager) {
+                //Create an instance of the search manager and perform the search.
+                Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () {
+                    searchManager = new Microsoft.Maps.Search.SearchManager(map);
+                    Search()
+                });
+            } else {
+                //Remove any previous results from the map.
+                map.entities.clear();
+                //Get the users query and geocode it.
+                let query = document.getElementById('from').value;
+                geocodeQuery(query);
+            }
+        }
+        
+        function geocodeQuery(query) {
+            let searchRequest = {
+                where: query,
+                callback: function (r) {
+                    if (r && r.results && r.results.length > 0) {
+                        let pin, pins = [], locs = [], output = 'Result:<br/>';
+                        for (let i = 0; i < r.results.length; i++) {
+                            //Create a pushpin for each result.
+                            pin = new Microsoft.Maps.Pushpin(r.results[i].location, {
+                                text: i + ''
+                            });
+                            pins.push(pin);
+                            locs.push(r.results[i].location);
+                            output += i + ') ' + r.results[i].name + '<br/>';
+                        }
+                        //Add the pins to the map
+                        map.entities.push(pins);
+                        //Display list of results
+                        document.getElementById('output').innerHTML = output;
+                        //Determine a bounding box to best view the results.
+                        let bounds;
+                        if (r.results.length == 1) {
+                            bounds = r.results[0].bestView;
+                        } else {
+                            //Use the locations from the results to calculate a bounding box.
+                            bounds = Microsoft.Maps.LocationRect.fromLocations(locs);
+                        }
+                        map.setView({ bounds: bounds });
+                    }
+                },
+                errorCallback: function (e) {
+                    //If there is an error, alert the user about it.
+                    alert("No results found.");
+                }
+            };
+            //Make the geocode request.
+            searchManager.geocode(searchRequest);
+        }
+
+        //Search Button
+        document.getElementById("get").onclick = function(){
+            Search();
+        };
+        //検索用function_end-------------------------------------------------------------------
+
 
     </script>
 
