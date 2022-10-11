@@ -55,26 +55,49 @@ def sc():
 @app.route("/home")
 
 def home():
-    if "user_id" in session:
-        # DBに接続
-        conn = sqlite3.connect("tweet.db")
+    # DBに接続
+    conn = sqlite3.connect("bouhan_map.db")
         
-        #データ取得のためのカーソル作成
-        c=conn.cursor()
+    #データ取得のためのカーソル作成
+    c=conn.cursor()
         
-        # カーソルを操作するSQLを書く
-        user_id=session["user_id"]
+    # カーソルを操作するSQLを書く
+    # id=session["id"]
         
-        c.execute("select * from tweet where user_id = ? and deleted_id is null order by datetime asc ",(user_id,))
+    c.execute("select * from toukou order by id DESC limit 10")
         
-        # pythonに持ってくる
-        tweet_data = c.fetchall()
+    # pythonに持ってくる
+    toukou_data = c.fetchall()
         
-        # 接続終了
-        c.close()
-        return render_template("home.html",html_tweet_r = tweet_data)
-    else:
-        return redirect("/login")
+    # 接続終了
+    c.close()
+    return render_template("home.html",html_toukou_r = toukou_data)
+
+
+# @app.route("/home")
+
+# def home():
+#     if "user_id" in session:
+#         # DBに接続
+#         conn = sqlite3.connect("tweet.db")
+        
+#         #データ取得のためのカーソル作成
+#         c=conn.cursor()
+        
+#         # カーソルを操作するSQLを書く
+#         user_id=session["user_id"]
+        
+#         c.execute("select * from tweet where user_id = ? and deleted_id is null order by datetime asc ",(user_id,))
+        
+#         # pythonに持ってくる
+#         tweet_data = c.fetchall()
+        
+#         # 接続終了
+#         c.close()
+#         return render_template("home.html",html_tweet_r = tweet_data)
+#     else:
+#         return redirect("/login")
+
 
 # form.htmlへの分岐
 @app.route("/form")
@@ -94,13 +117,13 @@ def form_post():
     incident = request.form.get("class_incident")
     ForR = request.form.get("class_fact_rumor")
     detail = request.form.get("detail")
-
+    url = request.form.get("image_url")
     # テキストの保存
     conn = sqlite3.connect("bouhan_map.db")
 
     # DBへ投稿内容を入力
     c=conn.cursor()
-    c.execute("INSERT INTO toukou values(null,?,?,?,?,?,?,?,?,?)",(date,age,sex,place,lat,lon,incident,ForR,detail))
+    c.execute("INSERT INTO toukou values(null,?,?,?,?,?,?,?,?,?,?)",(date,age,sex,place,lat,lon,incident,ForR,detail,url))
 
     # 変更を書き込み
     conn.commit()
@@ -329,7 +352,7 @@ def page_not_found(error):
     return "お探しのページは見つかりません！"
     
 if __name__ == '__main__':
-    app.run(debug=True,use_reloader=False)
+    app.run(debug=True,port=8080,use_reloader=False)
 
 
 # ここから防犯マップ用の追記

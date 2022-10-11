@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="keywords" content="福岡,治安,マップ">
@@ -7,23 +7,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../static/image/Logo.png" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/style.css">
     <title>福岡防犯ハザードマップ</title>
 </head>
 <body>
     <header>
-        <div class="topContainer">
-            <div class="title">
-                <img src="../static/image/Logo.png" alt="">
-                <h1 class="topLogo"><a href="/home">ふくおか防犯ハザードマップ</a></h1>
+        <!-- ナビゲーションメニュー -->
+        <nav class="navbar navbar-expand-lg navbar-light text-dark bg-dark" id="home">
+            <img src="../static/image/Logo.png" alt="">
+            <a class="navbar-brand text-white" href="/home">ふくおか防犯ハザードマップ</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                <a class="nav-link text-white" href="/form">投稿ページ<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link text-white" href="/map">全体マップ</a>
+                </li>
+            </ul>
             </div>
-            <div class="spacebox"></div>
-            <div class="pagejump">
-                <p class="toform"><a href="/form">投稿ページ</a></p>
-                <div class="spacebox2"></div>
-                <p class="toMap"><a href="/map">全体マップ</a></p>
-            </div>
-        </div>
+        </nav>
     </header>
     <div class="headerBlock"></div>
     <div class="body_h">
@@ -33,11 +41,16 @@
     {% endblock %}
         </div>
     </div>
-    <footer>
-        <p class="copyright">©︎2022 防犯ハザードマップ</p>
-    </footer>
+    <!-- フッター -->
+    <footer class="bg-dark text-center">
+        <div class="container">
+            <p class="my-0 text-white py-3">©︎2022 F3rd Team4</p>
+        </div>
+      </footer>
+    <!-- Bootstrap用のJS -->
     <script src="static/js/jquery-3.6.1.js"></script>
     <script src="static/js/common.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </body>
 </html>

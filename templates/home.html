@@ -1,52 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <p>Time Line</p>
-    {% for tweet in html_tweet_r %}
-        <div class="card">
-            <p>
-            <p>{{tweet[2]}}</p>
-            <a class="button1" href="/edit/{{tweet[0]}}">編集</a>
-            
-            
-            <form action="/delete_py/{{tweet[0]}}" method="post">
-                <input type="text" value="{{tweet[0]}}" name="id" class="hiden">
-                <input class="button1" type="submit" value="削除" onclick="disp()">
-            </form>
-            </p>
-            <p>
-                <img src="{{tweet[5]}}" alt="" class="submit_img">
-            </p>
-            <!-- 押した時点で削除 -->
-            <!-- <form action="/delete_py/{{tweet[0]}}" method="post">
-                <input type="text" value="{{tweet[0]}}" name="id" class="hiden">
-                <input class="button1" type="submit" value="削除">
-            </form> -->
-        </div>
-        
-        <!-- 削除の確認 -->
-        <script>
-            function disp(){
-                var result=window.confirm("本当に削除してもいいですか？");
-                if(result){
-                    console.log("OKがクリック")
-                }
-                else{
-                    console.log("NGがクリック")
-                }
-            }
-        </script>
-
-    {% endfor %}
-
-
-
-
-    <div>
-        <a href="/add">追加ページへ</a>
+    <div class="tl_title_area">
+        <h3 class="tl_title">タイムライン</h3>
     </div>
+    {% for toukou in html_toukou_r %}
+    <!-- <div class="timeline"> -->
+        <!-- <div class="timeline_card">
+            <div class="timeline_str">
+                <p>発生日時：{{toukou[1]}}</p>
+                <p>発生場所：{{toukou[4]}}</p>
+                <p>被害者情報：{{toukou[2]}} {{toukou[3]}}</p>
+                <p>被害分類：{{toukou[7]}}（{{toukou[8]}}</p>
+                <p>詳細：{{toukou[9]}}</p>
+            </div>
+            <img src = {{toukou[10]}}>
+        </div> -->
+        
+        <div class="row row-cols-xl-2 row-cols-sm-12">
+            <div class="col-xl-8 col-sm-10">
+              <div class="card bg-light">
+                <div class="card-body">
+                  <h5 class="card-title">事案詳細</h5>
+                  <p class="card-text">発生日時：{{toukou[1]}}</p>
+                  <p class="card-text">発生場所：{{toukou[4]}}</p>
+                  <p class="card-text">被害者　：{{toukou[2]}} {{toukou[3]}}</p>
+                  <p class="card-text">被害分類：{{toukou[7]}}（{{toukou[8]}})</p>
+                  <p class="card-text">詳細　　：{{toukou[9]}}</p>
+                </div>
+                <img src="{{toukou[10]}}" class="card-img px-5 mb-1" alt="...">
+              </div>
+            </div>
+        </div>
 
-
+    <!-- </div> -->
+    {% endfor %}
 
 
 {% endblock %}
