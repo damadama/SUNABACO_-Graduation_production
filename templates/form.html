@@ -2,16 +2,14 @@
 
 {% block content %}
 
-    <form action="/form_py" method="post" enctype="multipart/form-data" id="formId">
 
-        <!-- 日時 -->
-        <div class="formCard">
-            <p>発生日時</p>
-            <input type="datetime-local" name = "datetime">
-        </div>
+<h5>以下の投稿フォームに詳細を入力後、投稿ボタンを押してください</h5>
+    <form action="/form_py" method="post" enctype="multipart/form-data" id="formId">
+        <h4>投稿フォーム</h4>
 
         <!-- 年齢 -->
         <div class="formCard">
+            <h5 class="formTitle">〜被害者情報〜</h5>
             <p>年齢</p>
             <input type="text" list="agelist" name = "age">
             <datalist id="agelist">
@@ -36,16 +34,30 @@
             </datalist>
         </div>
 
+        <!-- 日時 -->
+        <div class="formCard">
+            <h5 class="formTitle">〜被害の内容〜</h5>
+            <p>発生日時</p>
+            <input type="datetime-local" name = "datetime">
+        </div>
+
         <!-- 場所 -->
         <div class="formCard">
             <p>場所</p>
-            <div id="geocodeLat">geocode:data</div>
-            <div id="geocodeLon">geocode:data</div>
-            <div id="geocode">geocode:data</div>
-            <div id="myMap" style="width:60%;height:250px;float:left;display: block;"></div>
+
+            <img id="image">
+            <div class="hiddenCard">
+                <div id="test"></div>
+                <div id="test2"></div>
+                <div id="geocodeLat">緯度を表示</div>
+                <div id="geocodeLon">軽度を表示</div>
+                <div id="geocode">住所を表示</div>
+            </div>
+            <div id="myMap" style="width:100%;height:250px;float:left;display: block;"></div>
             <input id="inputLat" type="hidden" name = "location_conv_ido" style="height:30%">
             <input id="inputLon" type="hidden" name = "location_conv_keido" style="height:30%">
             <input id="inputPlace" type="hidden" name = "location_input" style="height:30%">
+            <input id="inputUrl" type="hidden" name = "image_url" style="height:30%">
             <script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Am1A8omJimUSiKmqMekNEEiVLN6owRv3ueFbxXDJ-GV2kl2Fg3NzPPgtFT56pwRz' async defer></script>
             <script src="../static/js/BmapQuery.js"></script>
 
@@ -72,13 +84,6 @@
                     // getGeocode("searchQuery",callback);
                     //----------------------------------------------------
                     
-                    //A. Address "Seattle"
-                    // map.getGeocode("Seattle", function(data){
-                    //     console.log(data);          //Get Geocode ObjectData
-                    //     const lat = data.latitude;  //Get latitude
-                    //     const lon = data.longitude; //Get longitude
-                    //     document.querySelector("#geocode").innerHTML=lat+','+lon;
-                    // });
                     
                     //B.Get geocode of click location
                     map.onGeocode("click", function(data){
@@ -88,11 +93,17 @@
                         const lon = data.location.longitude; //Get longitude
                         document.querySelector("#geocodeLat").innerHTML=lat;
                         document.querySelector("#geocodeLon").innerHTML=lon;
+                        document.querySelector("#test").innerHTML=lat+","+lon;
+                        document.querySelector("#test2").innerHTML='http://dev.virtualearth.net/REST/v1/Imagery/Map/Road/'+lat+','+lon+'/15?key=Am1A8omJimUSiKmqMekNEEiVLN6owRv3ueFbxXDJ-GV2kl2Fg3NzPPgtFT56pwRz';
                         let pin = map.pin(lat, lon, "#ff0000");
                         var Myelement = document.getElementById("inputLat");
                         Myelement.value = lat;
                         var Myelement = document.getElementById("inputLon");
                         Myelement.value = lon;
+                        var imgurl = 'http://dev.virtualearth.net/REST/v1/Imagery/Map/Road/'+lat+','+lon+'/15?ms=300,175&pp='+lat+','+lon+';80&key=Am1A8omJimUSiKmqMekNEEiVLN6owRv3ueFbxXDJ-GV2kl2Fg3NzPPgtFT56pwRz';
+                        console.log(imgurl);
+                        var Myelement = document.getElementById("inputUrl");
+                        Myelement.value = imgurl;
                     });
                     // Microsoft.Maps.Events.removeHandler(pushpinClick);
                     // Microsoft.Maps.Events.removeHandler(mapClick);
@@ -100,15 +111,14 @@
                         map.reverseGeocode(clickPoint.location, function(place){
                             console.log(place);
                             document.querySelector("#geocode").innerHTML=place;
-                            var Myelement = document.getElementById("inputPlace");
-                            Myelement.value = place;
+                            var Placeelement = document.getElementById("inputPlace");
+                            Placeelement.value = place;
                         });
                     });
                 }
                     
             </script>
         </div>
-        <br>
         <!-- 分類 -->
         <div class="formCard">
             <p>分類</p>
@@ -138,18 +148,12 @@
         <!-- 詳細 -->
         <div class="formCard">
             <p>詳細</p>
-            <textarea name = "detail" rows="4"></textarea>
+            <textarea name = "detail" rows="4" cols="50"></textarea>
         </div>
         
-        <input type="submit" name = "save" value="確定">
+        <input type="submit" name = "save" value="投稿" id="toukoubtn">
     </form>
 
-    <!--元データ -->
-    <!-- <form action="/add_py" method="post">
-        <input type="text" name = "task">
-        <input type="submit" name ="save" value="submit">
-    </form>-->
-
-
-    <a href="/home">ホームへ</a>
+    <a href="/home"><h5>[ ふくおか防犯ハザードマップ ]</h5></a>
+    <br>
 {% endblock %}
