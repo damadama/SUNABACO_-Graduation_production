@@ -30,75 +30,42 @@ body{
 }
 
 header{
+    z-index: 9999;
     width: 100%;
-    display: flex;
+    /* display: flex; */
     position: fixed;
     top: 0;
     left: 0;
     margin: 0;
     height: 90px;
-    justify-content: space-around;
+}
+
+.navbar-expand-lg .navbar-collapse {
+    justify-content: flex-end;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    margin:0 auto;
+}
+
+.card {
     align-items: center;
-    background-color: rgb(235, 255, 190);
-    border-bottom: 1px solid rgb(138, 198, 0);
+    padding-bottom: 20px;
+}
+
+.card-img {
+    max-width: 80%;
+}
+
+.card-text {
+    text-align: left;
 }
 
 .headerBlock{
     width: 100%;
-    height: 90px;
-}
-
-.topContainer{
-    width: 95%;
-    display: flex;
-    margin-top:auto;
-    margin-bottom: auto;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.title{
-    display: flex;
-    margin-top:auto;
-    margin-bottom: auto;
-    align-items: center;
-}
-
-.spacebox{
-    width: 40%;
-}
-
-.spacebox2{
-    width: 20px;
-}
-
-.pagejump{
-    color: black;
-    display: flex;
-    padding-right: 20px;
-}
-
-.menu{
-    display: flex;
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
-footer{
-    color:rgb(24, 24, 24);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(235, 255, 190);
-    border-top: 1px solid rgb(138, 198, 0);
-    border-bottom: 1px solid rgb(138, 198, 0);
-    height:50px;
-    width: 100vw;
-}
-
-footer .copyright {
-    padding-top: 30px;
-    letter-spacing: 2px;
+    height: 80px;
 }
 
 .card{
@@ -109,44 +76,58 @@ footer .copyright {
     margin-bottom: 10px;
 }
 
-.hiden{
-    display: none;
-}
-
-.button1{
-    margin-left: 10px;
-}
-
-.submit_img{
-    display: flex;
-    width: 200px;
-    height: auto;
-}
-
-a {
+header a {
 	outline: none;
 	color: inherit;
 	text-decoration: none;
 }
 
-/* #main{
-    height:100%;
+/* form.html */
+#formId {
+    /* width: 80%; */
+    margin: 20px 10%;
+    padding: 15px 0;
+    background-color: rgb(240, 240, 240);
 }
 
-#main body{
-    padding:0;
-    margin:0;
-    background:#333;
+.formCard {
+    display: flex;
+    margin: 20px 20%;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-#main h1{
-    padding:0;
-    margin:0;
-    font-size:100%;
-    color:white;
+.formTitle {
+    margin-bottom: 5px;
 }
 
-#main p{
-    margin:0
-} */
+.hiddenCard {
+    display: none;
+}
 
+textarea {
+    resize: none;
+}
+
+#toukoubtn {
+    width: 100px;
+    font-size: 20px;
+    background-color: rgb(78, 238, 150);
+}
+
+/* home.html */
+.tl_title_area {
+    margin: 0;
+    padding: 10px 0;
+    background-color: rgb(186, 186, 186);
+    font-weight: 200;
+}
+
+.tl_title {
+    font-weight:bold;
+    letter-spacing: 3px;
+}
+
+.card-text {
+    font-size: 19px;
+}
