@@ -48,6 +48,7 @@
 
             //for文でデータがある分だけピンを立てる処理を実行
             let pins=[]
+            let des=[]
             for (let j = 0; j<address.length; j++){
                 //Create custom Pushpin
                 pins[j] = new Microsoft.Maps.Pushpin(address[j], {
@@ -62,9 +63,11 @@
                 });
                 pins[j].metadata = {
                     title: 'Pin Title',
-                    description: 'Pin discription'
+                    description: address[j].detail
                 };
-                Microsoft.Maps.Events.addHandler(pins[j], 'click', pushpinClicked);
+
+                Microsoft.Maps.Events.addHandler(pins[j], 'click', pushpinClicked_pushpin);
+                
             }
             //map.entities.push(pin);
 
@@ -73,21 +76,35 @@
 
             for (let j = 0; j<address_opendata.length; j++){
                 //Create custom Pushpin
-                pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
-                    color: 'blue',            //Color
-                    //draggable:true,          //MouseDraggable
-                    //enableClickedStyle:true, //Click
-                    //enableHoverStyle:true,   //MouseOver
-                    //visible:true,             //show/hide
-                    title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
-                    //subtitle:'aaaaaa'        //Pushpin subtitle
-                    text:"OD"            
-                });
+                if (address_opendata[j].opendata_or_news==1){
+                    pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
+                        color: 'blue',            //Color
+                        //draggable:true,          //MouseDraggable
+                        //enableClickedStyle:true, //Click
+                        //enableHoverStyle:true,   //MouseOver
+                        //visible:true,             //show/hide
+                        title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
+                        //subtitle:'aaaaaa'        //Pushpin subtitle
+                        text:"OD"            
+                    });
+                }else{
+                    pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
+                        color: 'purple',            //Color
+                        //draggable:true,          //MouseDraggable
+                        //enableClickedStyle:true, //Click
+                        //enableHoverStyle:true,   //MouseOver
+                        //visible:true,             //show/hide
+                        title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
+                        //subtitle:'aaaaaa'        //Pushpin subtitle
+                        text:"WN"            
+                        });
+                }
+
                 pins_opendata[j].metadata = {
                     title: 'Pin Title',
-                    description: 'Pin discription'
+                    description: address_opendata[j].detail
                 };
-                Microsoft.Maps.Events.addHandler(pins_opendata[j], 'click', pushpinClicked);
+                Microsoft.Maps.Events.addHandler(pins_opendata[j], 'click', pushpinClicked_pushpin);
             }
             //map.entities.push(pin_opendata);
 
@@ -195,6 +212,13 @@
             //クラスターの大きさ変更end------------------------
         }
 
+        //プッシュピン用
+        function pushpinClicked_pushpin(e) {
+            //Show an infobox when a pushpin is clicked.
+            showInfobox_pushpin(e.target);
+        }
+
+        //クラスター用
         function pushpinClicked(e) {
             //Show an infobox when a pushpin is clicked.
             showInfobox(e.target);
@@ -233,24 +257,79 @@
 
             //Check to see if the pushpin is a cluster.
             if (pin.containedPushpins) {
-
                 //Create a list of all pushpins that are in the cluster.
                 description.push('<div style="max-height:75px;overflow-y:auto;"><ul>');
                 for (var i = 0; i < pin.containedPushpins.length; i++) {
                     description.push('<li>', pin.containedPushpins[i].getTitle(), '</li>');
                 }
                 description.push('</ul></div>');
+                
+                //Display an infobox for the pushpin.　クラスター押したとき
+                infobox.setOptions({
+                    title: pin.getTitle(),
+                    location: pin.getLocation(),
+                    //description: description.join(''),
+                    description: description.join(''),
+                    visible: true
+                });
+                console.log(infobox)
             }
+        }
 
+
+
+        function showInfobox_pushpin(pin) {
+            var description = [];
             //Display an infobox for the pushpin.
             infobox.setOptions({
                 title: pin.getTitle(),
                 location: pin.getLocation(),
-                description: description.join(''),
+                //description: description.join(''),
+                description: pin.metadata.description,
                 visible: true
             });
+
+            console.log(infobox)
         }
 
+
+
+
+
+
+
+
+
+
+
+        
+        //showInfoboxの元データ
+        // function showInfobox(pin) {
+        //     var description = [];
+
+        //     //Check to see if the pushpin is a cluster.
+        //     if (pin.containedPushpins) {
+
+        //         //Create a list of all pushpins that are in the cluster.
+        //         description.push('<div style="max-height:75px;overflow-y:auto;"><ul>');
+        //         for (var i = 0; i < pin.containedPushpins.length; i++) {
+        //             description.push('<li>', pin.containedPushpins[i].getTitle(), '</li>');
+        //         }
+        //         description.push('</ul></div>');
+        //     }
+        //     //Display an infobox for the pushpin.
+        //     infobox.setOptions({
+        //         title: pin.getTitle(),
+        //         location: pin.getLocation(),
+        //         //description: description.join(''),
+        //         description: description.join(''),
+        //         visible: true
+        //     });
+
+        //     console.log(infobox)
+        // }
+
+        
 
         //↓はpushpinClicked2の2は後で消す
         // function pushpinClicked2(e) {

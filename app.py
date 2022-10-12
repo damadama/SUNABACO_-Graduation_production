@@ -370,7 +370,7 @@ def map():
     # カーソルを操作するSQLを書く
     # c.execute("select * from tweet where id = ?",(id,))
     c.execute("select * from toukou")
-    g.execute("select * from fukuokakenkei_opendata where location_conv_ido != ''")
+    g.execute("select * from fukuokakenkei_opendata_add_scryping where location_conv_ido != ''")
     
     
     # pythonに持ってくる
@@ -393,13 +393,20 @@ def map():
         address_dict["longitude"] = map_data_r[6]
         address_dict["incident"] = map_data_r[7] 
         address_dict["date"] = map_data_r[1][0:10]
+        address_dict["class_fact_rumor"] = map_data_r[8] 
+        address_dict["detail"] = map_data_r[9] 
         address_list.append(address_dict.copy())
 
     for map_data_r_opendata in map_data_opendata:
         address_dict_opendata["latitude"] =map_data_r_opendata[13]
         address_dict_opendata["longitude"] = map_data_r_opendata[14]
-        address_dict_opendata["incident"] = map_data_r_opendata[1] + "_" +map_data_r_opendata[2] 
+        if map_data_r_opendata[2] is None:
+            address_dict_opendata["incident"] = map_data_r_opendata[1] 
+        else:
+            address_dict_opendata["incident"] = map_data_r_opendata[1] + "_" +map_data_r_opendata[2] 
         address_dict_opendata["date"] = map_data_r_opendata[9]
+        address_dict_opendata["detail"] = map_data_r_opendata[15]
+        address_dict_opendata["opendata_or_news"] = map_data_r_opendata[16]
         address_list_opendata.append(address_dict_opendata.copy())
 
     #確認用csv出力
