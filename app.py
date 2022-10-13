@@ -369,7 +369,7 @@ def map():
     
     # カーソルを操作するSQLを書く
     # c.execute("select * from tweet where id = ?",(id,))
-    c.execute("select * from toukou")
+    c.execute("select * from toukou where location_conv_ido != ''")
     g.execute("select * from fukuokakenkei_opendata_add_scryping where location_conv_ido != ''")
     
     
