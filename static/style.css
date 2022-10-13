@@ -131,3 +131,9 @@ textarea {
 .card-text {
     font-size: 19px;
 }
+
+.hanrei li {
+	list-style-type: disc;/* リストの左側に黒丸 */
+	margin-left: 24px;/* リストの左側に余白 */
+	text-align: left;
+}

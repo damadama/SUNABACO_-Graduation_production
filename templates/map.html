@@ -2,20 +2,27 @@
 
 {% block content %}
 
-<!-- 
-    {% for mapdata in html_map_data %}
-        <p>{{mapdata}}</p>
-    {% endfor %}
--->
+    <h6><br></h6>
+    <h1>全体MAP</h1>
+    <h5><br></h5>
 
     <div id="main">
-        <h1>全体MAP</h1>
         <p>
             <input type="text" id="from" value="福岡県福岡市"> <button id="get">Search</button>
         </p>
+        <h5><br></h5>
         <div id="myMap" style='width:100%;height:450px;'></div> 
-        
     </div>
+
+    <div class="hanrei" style="text-align:left">
+        <p>凡例</p>
+        <ul>
+            <li>投稿(黄):投稿データ(事実)</li>
+            <li>投稿(青):投稿データ(噂)</li>
+            <li>OD:福岡県警ウェブサイトのオープンデータ</li>
+            <li>WN:Web Newsのデータ</li>
+        </ul>
+    </div>    
 
     <div style="text-align:left">
         <p><br></p>
@@ -51,16 +58,30 @@
             let des=[]
             for (let j = 0; j<address.length; j++){
                 //Create custom Pushpin
-                pins[j] = new Microsoft.Maps.Pushpin(address[j], {
-                    color: 'red',            //Color
-                    //draggable:true,          //MouseDraggable
-                    //enableClickedStyle:true, //Click
-                    //enableHoverStyle:true,   //MouseOver
-                    //visible:true,             //show/hide
-                    title:address[j].date+ "\n" +address[j].incident,           //pushpin title
-                    //subtitle:"表参道",        //Pushpin subtitle
-                    text:"投稿"            
-                });
+                if (address[j].class_fact_rumor=="事実"){
+                    pins[j] = new Microsoft.Maps.Pushpin(address[j], {
+                        color: 'darkorange',            //Color
+                        //draggable:true,          //MouseDraggable
+                        //enableClickedStyle:true, //Click
+                        //enableHoverStyle:true,   //MouseOver
+                        //visible:true,             //show/hide
+                        title:address[j].date+ "\n" +address[j].incident+"("+address[j].class_fact_rumor+")",           //pushpin title
+                        //subtitle:"表参道",        //Pushpin subtitle
+                        text:"投稿"            
+                    });
+                }else{
+                    pins[j] = new Microsoft.Maps.Pushpin(address[j], {
+                        color: 'navy',            //Color
+                        //draggable:true,          //MouseDraggable
+                        //enableClickedStyle:true, //Click
+                        //enableHoverStyle:true,   //MouseOver
+                        //visible:true,             //show/hide
+                        title:address[j].date+ "\n" +address[j].incident+"("+address[j].class_fact_rumor+")",           //pushpin title
+                        //subtitle:"表参道",        //Pushpin subtitle
+                        text:"投稿"            
+                    });
+                }
+                
                 pins[j].metadata = {
                     title: 'Pin Title',
                     description: address[j].detail
@@ -79,23 +100,13 @@
                 if (address_opendata[j].opendata_or_news==1){
                     pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
                         color: 'blue',            //Color
-                        //draggable:true,          //MouseDraggable
-                        //enableClickedStyle:true, //Click
-                        //enableHoverStyle:true,   //MouseOver
-                        //visible:true,             //show/hide
                         title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
-                        //subtitle:'aaaaaa'        //Pushpin subtitle
                         text:"OD"            
                     });
                 }else{
                     pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
                         color: 'purple',            //Color
-                        //draggable:true,          //MouseDraggable
-                        //enableClickedStyle:true, //Click
-                        //enableHoverStyle:true,   //MouseOver
-                        //visible:true,             //show/hide
                         title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
-                        //subtitle:'aaaaaa'        //Pushpin subtitle
                         text:"WN"            
                         });
                 }
