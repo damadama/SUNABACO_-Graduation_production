@@ -2,9 +2,9 @@
 
 {% block content %}
 
-    <h6><br></h6>
+    <!-- <h6><br></h6>
     <h1>全体MAP</h1>
-    <h5><br></h5>
+    <h5><br></h5> -->
 
     <div id="main">
         <p>
@@ -93,29 +93,84 @@
             //for文でデータがある分だけピンを立てる処理を実行 address_opendata用
             let pins_opendata=[]
 
-            for (let j = 0; j<address_opendata.length; j++){
-                //Create custom Pushpin
-                if (address_opendata[j].opendata_or_news==1){
-                    pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
-                        color: 'blue',            //Color
-                        title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
-                        text:"OD"            
-                    });
-                }else{
-                    pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
-                        color: 'purple',            //Color
-                        title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
-                        text:"WN"            
+            //open_data + web_newsのどちらも
+            if((localStorage.getItem("open_data_value")==1)&&(localStorage.getItem("web_news_value")==1)){
+                for (let j = 0; j<address_opendata.length; j++){
+                    //Create custom Pushpin
+                    if (address_opendata[j].opendata_or_news==1){
+                        pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
+                            color: 'blue',            //Color
+                            title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
+                            text:"OD"            
                         });
+                    }else{
+                        pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
+                            color: 'purple',            //Color
+                            title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
+                            text:"WN"            
+                            });
+                    }
+    
+                    pins_opendata[j].metadata = {
+                        title: 'Pin Title',
+                        description: address_opendata[j].detail
+                    };
+                    Microsoft.Maps.Events.addHandler(pins_opendata[j], 'click', pushpinClicked_pushpin);
                 }
-
-                pins_opendata[j].metadata = {
-                    title: 'Pin Title',
-                    description: address_opendata[j].detail
-                };
-                Microsoft.Maps.Events.addHandler(pins_opendata[j], 'click', pushpinClicked_pushpin);
             }
-            //map.entities.push(pin_opendata);
+
+            //open_dataのみ
+            if((localStorage.getItem("open_data_value")==1)&&((localStorage.getItem("web_news_value")==0)||(localStorage.getItem("web_news_value")==null))){
+                for (let j = 0; j<address_opendata.length; j++){
+                    //Create custom Pushpin
+                    if (address_opendata[j].opendata_or_news==1){
+                        pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
+                            color: 'blue',            //Color
+                            title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
+                            text:"OD"            
+                        });
+                        pins_opendata[j].metadata = {
+                            title: 'Pin Title',
+                            description: address_opendata[j].detail
+                        };
+                        Microsoft.Maps.Events.addHandler(pins_opendata[j], 'click', pushpinClicked_pushpin);
+                    }else{
+                        //pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
+                        //    color: 'purple',            //Color
+                        //    title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
+                        //    text:"WN"            
+                        //    });
+                    }
+                }
+            }
+
+            //web_newsのみ
+            if(((localStorage.getItem("open_data_value")==0)||(localStorage.getItem("open_data_value")==null))&&(localStorage.getItem("web_news_value")==1)){
+                var i=0;
+                for (let j = 0; j<address_opendata.length; j++){
+                    //Create custom Pushpin
+                    if (address_opendata[j].opendata_or_news==2){
+                        pins_opendata[i] = new Microsoft.Maps.Pushpin(address_opendata[j], {
+                            color: 'purple',            //Color
+                            title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
+                            text:"WN"            
+                        });
+                        pins_opendata[i].metadata = {
+                            title: 'Pin Title',
+                            description: address_opendata[j].detail
+                        };
+                        Microsoft.Maps.Events.addHandler(pins_opendata[i], 'click', pushpinClicked_pushpin);
+                        i=i+1
+                    }else{
+                        //pins_opendata[j] = new Microsoft.Maps.Pushpin(address_opendata[j], {
+                        //    color: 'purple',            //Color
+                        //    title:address_opendata[j].date+ "\n" +address_opendata[j].incident,           //pushpin title
+                        //    text:"WN"            
+                        //    });
+                    }
+                }
+            }
+
 
             //レイヤーの追加start
             //Load the Clustering module.
@@ -431,6 +486,7 @@
                 localStorage.setItem("open_data_value",0)
                 localStorage.setItem("web_news_value",0)
             }
+            window.location.reload();
         }
 
 
