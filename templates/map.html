@@ -10,6 +10,15 @@
         <p>
             <input type="text" id="from" value="福岡県福岡市"> <button id="get">Search</button>
         </p>
+        <div class="select_list" id="select_list" name="select_list">
+            <!-- <input type="checkbox" id="toukou" name="interest" value="coding" checked>
+            <label for="toukou">投稿データ　</label> -->
+            <input type="checkbox" id="open_data" name="open_data" value="open_data" >
+            <label for="open_data">県警オープンデータ　</label>
+            <input type="checkbox" id="web_news" name="web_news" value="web_news" >
+            <label for="web_news">Web News </label>
+            <button id="get_research" style="margin-left:10px" onclick="clickBtn5()">Filter On</button>
+        </div>
         <h5><br></h5>
         <div id="myMap" style='width:100%;height:450px;'></div> 
     </div>
@@ -52,7 +61,6 @@
             infobox = new Microsoft.Maps.Infobox(map.getCenter(), { visible: false });
             infobox.setMap(map);
 
-
             //for文でデータがある分だけピンを立てる処理を実行
             let pins=[]
             let des=[]
@@ -61,23 +69,13 @@
                 if (address[j].class_fact_rumor=="事実"){
                     pins[j] = new Microsoft.Maps.Pushpin(address[j], {
                         color: 'darkorange',            //Color
-                        //draggable:true,          //MouseDraggable
-                        //enableClickedStyle:true, //Click
-                        //enableHoverStyle:true,   //MouseOver
-                        //visible:true,             //show/hide
                         title:address[j].date+ "\n" +address[j].incident+"("+address[j].class_fact_rumor+")",           //pushpin title
-                        //subtitle:"表参道",        //Pushpin subtitle
                         text:"投稿"            
                     });
                 }else{
                     pins[j] = new Microsoft.Maps.Pushpin(address[j], {
                         color: 'navy',            //Color
-                        //draggable:true,          //MouseDraggable
-                        //enableClickedStyle:true, //Click
-                        //enableHoverStyle:true,   //MouseOver
-                        //visible:true,             //show/hide
                         title:address[j].date+ "\n" +address[j].incident+"("+address[j].class_fact_rumor+")",           //pushpin title
-                        //subtitle:"表参道",        //Pushpin subtitle
                         text:"投稿"            
                     });
                 }
@@ -303,16 +301,6 @@
             console.log(infobox)
         }
 
-
-
-
-
-
-
-
-
-
-
         
         //showInfoboxの元データ
         // function showInfobox(pin) {
@@ -417,6 +405,34 @@
             Search();
         };
         //検索用function_end-------------------------------------------------------------------
+        console.log(localStorage.getItem("open_data_value"))
+        console.log(localStorage.getItem("web_news_value"))
+        
+        function clickBtn5() {
+            const open_data = document.getElementById('open_data');
+            const web_news = document.getElementById('web_news');
+            //var open_data_value = "value";
+            //var web_news = "value";
+            if ((open_data.checked == true) && (web_news.checked == true)) { //(chk3[i].checked === true)と同じ
+                console.log("double True")
+                localStorage.setItem("open_data_value",1)
+                localStorage.setItem("web_news_value",1)
+                //console.log(localStorage.getItem("open_data_value"))
+            } else if((open_data.checked == false) && (web_news.checked == true)){
+                console.log("open_data False web_news true")
+                localStorage.setItem("open_data_value",0)
+                localStorage.setItem("web_news_value",1)
+            } else if((open_data.checked == true) && (web_news.checked == false)){
+                console.log("open_data true web_news False")
+                localStorage.setItem("open_data_value",1)
+                localStorage.setItem("web_news_value",0)
+            } else{
+                console.log("open_data False web_news False")
+                localStorage.setItem("open_data_value",0)
+                localStorage.setItem("web_news_value",0)
+            }
+        }
+
 
 
     </script>

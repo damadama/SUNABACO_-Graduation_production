@@ -137,3 +137,7 @@ textarea {
 	margin-left: 24px;/* リストの左側に余白 */
 	text-align: left;
 }
+
+.select_list{
+    margin-top: 15px;
+}
